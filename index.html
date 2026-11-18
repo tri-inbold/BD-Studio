@@ -245,9 +245,9 @@ kbd{font:10px var(--tris-font-mono);background:var(--fill);border-radius:3px;pad
 <body>
 <div id="app">
 <header>
-  <div class="hl"><button id="bCssPanel" type="button" title="Hiện CSS panel"><i data-ic="panel-left-open"></i></button><b class="logo">Danske Bank Studio</b><button id="bOpen"><i data-ic="folder-open"></i>Open</button><button id="bSave" title="Working file: zip gồm index.html, style.css, src/, comment.json"><i data-ic="save"></i>Save</button><button id="bTpl"><i data-ic="layout-template"></i>Template</button><button id="bBlank"><i data-ic="file"></i>New</button></div>
+  <div class="hl"><button id="bCssPanel" type="button" title="Hiện CSS panel"><i data-ic="panel-left-open"></i></button><b class="logo">Danske Bank Studio</b><button id="bOpen" title="Mở file .dbhtml (Ctrl+O)"><i data-ic="folder-open"></i>Open</button><button id="bSave" title="Lưu file .dbhtml (Ctrl+S): zip gồm index.html, style.css, src/, comment.json"><i data-ic="save"></i>Save</button><button id="bTpl" title="Banner mẫu Danske Bank (Ctrl+T)"><i data-ic="layout-template"></i>Template</button><button id="bBlank" title="Banner trống (Ctrl+N)"><i data-ic="file"></i>New</button></div>
   <div class="seg"><button id="mDesign" class="on"><i data-ic="pen-tool"></i>Design</button><button id="mCode"><i data-ic="code-xml"></i>Code</button></div>
-  <div class="hrt"><button id="autobadge" type="button" class="autobadge" style="display:none" title="Auto-save vào file .dbhtml"></button><button id="bUndo" title="Hoàn tác (Ctrl+Z)"><i data-ic="undo-2"></i></button><button id="bRedo" title="Làm lại (Ctrl+Shift+Z)"><i data-ic="redo-2"></i></button><button id="bTh" title="Giao diện sáng/tối"><i data-ic="sun-moon"></i></button><button id="bZip" class="pri"><i data-ic="download"></i>Export zip</button></div>
+  <div class="hrt"><button id="autobadge" type="button" class="autobadge" style="display:none" title="Auto-save vào file .dbhtml"></button><button id="bUndo" title="Hoàn tác (Ctrl+Z)"><i data-ic="undo-2"></i></button><button id="bRedo" title="Làm lại (Ctrl+Shift+Z)"><i data-ic="redo-2"></i></button><button id="bTh" title="Giao diện sáng/tối"><i data-ic="sun-moon"></i></button><button id="bZip" class="pri" title="Export .zip (Ctrl+E)"><i data-ic="download"></i>Export zip</button></div>
 </header>
 <aside id="left"><div class="lh"><span><i data-ic="braces"></i>CSS</span><span class="cnt" id="cssS">style.css</span></div><textarea id="cssT" spellcheck="false"></textarea></aside>
 <main id="mid">
@@ -659,13 +659,14 @@ function gen(){sync();return{html:genHTML(),css:genCSS()}}
 const code=gen;
 
 /* ---------- preview / stage ---------- */
-function toPrev(c){let h=c.html.replace(/<link[^>]*href=["']style\.css["'][^>]*>/i,()=>'<style id="bs-css">\n'+c.css+'\n</style>');for(const a of Object.values(P.assets))h=h.split('src/'+fn(a)).join(a.data);const hc=hiddenCSS();if(hc)h=h.replace(/<\/head>/i,hc+'</head>');return h.replace(/<head[^>]*>/i,m=>m+'<script>window.BS_EDIT=1<\/script>')}
+const inlineAssets=s=>{for(const a of Object.values(P.assets))s=s.split('src/'+fn(a)).join(a.data);return s};
+function toPrev(c){let h=c.html.replace(/<link[^>]*href=["']style\.css["'][^>]*>/i,()=>'<style id="bs-css">\n'+c.css+'\n</style>');h=inlineAssets(h);const hc=hiddenCSS();if(hc)h=h.replace(/<\/head>/i,hc+'</head>');return h.replace(/<head[^>]*>/i,m=>m+'<script>window.BS_EDIT=1<\/script>')}
 const hiddenCSS=()=>{const hid=P.els.filter(e=>e.hidden).map(e=>'.e_'+e.id).join(',');return hid?'<style id="bs-ui-hide">'+hid+'{display:none!important}</style>':''};
 let lastBody=null;
 function refresh(){clearTimeout(rtm);rtm=setTimeout(()=>{
  const c=code(),d=fr.contentDocument,sig=c.html.slice(c.html.indexOf('<body'));
  if(d&&d.getElementById('bs-css')&&lastBody===sig){
-  d.getElementById('bs-css').textContent=c.css;
+  d.getElementById('bs-css').textContent=inlineAssets(c.css);
   const old=d.getElementById('bs-ui-hide'),hc=hiddenCSS();
   if(hc){if(old)old.outerHTML=hc;else d.head.insertAdjacentHTML('beforeend',hc)}
   else if(old)old.remove();
@@ -1055,6 +1056,14 @@ function redo(){if(!HS.r.length)return;pause();HS.u.push(HS.cur);HS.cur=HS.r.pop
 $('#bUndo').onclick=undo;$('#bRedo').onclick=redo;
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(b)b.blur()});
 addEventListener('keydown',ev=>{const typing=/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName)||ev.target.isContentEditable,md=ev.ctrlKey||ev.metaKey,k=ev.key;
+ const fk=k.toLowerCase();
+ if(md&&!ev.altKey&&!ev.shiftKey){
+  if(fk=='s'){ev.preventDefault();$('#bSave').click();return}
+  if(fk=='e'){ev.preventDefault();$('#bZip').click();return}
+  if(fk=='o'){ev.preventDefault();$('#bOpen').click();return}
+  if(fk=='n'){ev.preventDefault();$('#bBlank').click();return}
+  if(fk=='t'){ev.preventDefault();$('#bTpl').click();return}
+ }
  if(md&&!typing&&/^[zy]$/i.test(k)){ev.preventDefault();(/y/i.test(k)||ev.shiftKey)?redo():undo();return}
  if(md&&!typing&&mode=='design'&&(k=='c'||k=='C')&&(selKfs.length||selKf)){ev.preventDefault();copyKfs();return}
  if(md&&!typing&&mode=='design'&&(k=='v'||k=='V')&&kfClip){ev.preventDefault();pasteKfs();return}
