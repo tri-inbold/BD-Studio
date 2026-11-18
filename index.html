@@ -34,6 +34,7 @@ input[type=checkbox]:checked{background-color:var(--ac);border-color:var(--ac);b
 button{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:28px;padding:0 10px;background:transparent;border:0;border-radius:5px;font-weight:500;white-space:nowrap;cursor:pointer}
 button:hover{background:var(--tris-hover-bg)}.ic{flex:none}
 button.pri{background:var(--tris-primary);color:#fff}button.pri:hover{background:var(--tris-primary-hover)}
+button.secb{background:var(--tris-surface-3);color:var(--tx)}button.secb:hover{background:var(--tris-surface-4)}
 button:disabled{opacity:.35;pointer-events:none}
 .autobadge{height:22px;padding:0 7px;font-size:10px;color:var(--tris-success);background:color-mix(in srgb,var(--tris-success) 12%,transparent);border-radius:5px;white-space:nowrap}
 .autobadge:hover{background:color-mix(in srgb,var(--tris-success) 20%,transparent)}
@@ -247,7 +248,7 @@ kbd{font:10px var(--tris-font-mono);background:var(--fill);border-radius:3px;pad
 <header>
   <div class="hl"><button id="bCssPanel" type="button" title="Hiện CSS panel"><i data-ic="panel-left-open"></i></button><b class="logo">Danske Bank Studio</b><button id="bOpen" title="Mở file .dbhtml (Ctrl+O)"><i data-ic="folder-open"></i>Open</button><button id="bSave" title="Lưu file .dbhtml (Ctrl+S): zip gồm index.html, style.css, src/, comment.json"><i data-ic="save"></i>Save</button><button id="bTpl" title="Banner mẫu Danske Bank (Ctrl+T)"><i data-ic="layout-template"></i>Template</button><button id="bBlank" title="Banner trống (Ctrl+N)"><i data-ic="file"></i>New</button></div>
   <div class="seg"><button id="mDesign" class="on"><i data-ic="pen-tool"></i>Design</button><button id="mCode"><i data-ic="code-xml"></i>Code</button></div>
-  <div class="hrt"><button id="autobadge" type="button" class="autobadge" style="display:none" title="Auto-save vào file .dbhtml"></button><button id="bUndo" title="Hoàn tác (Ctrl+Z)"><i data-ic="undo-2"></i></button><button id="bRedo" title="Làm lại (Ctrl+Shift+Z)"><i data-ic="redo-2"></i></button><button id="bTh" title="Giao diện sáng/tối"><i data-ic="sun-moon"></i></button><button id="bZip" class="pri" title="Export .zip (Ctrl+E)"><i data-ic="download"></i>Export zip</button></div>
+  <div class="hrt"><button id="autobadge" type="button" class="autobadge" style="display:none" title="Auto-save vào file .dbhtml"></button><button id="bUndo" title="Hoàn tác (Ctrl+Z)"><i data-ic="undo-2"></i></button><button id="bRedo" title="Làm lại (Ctrl+Shift+Z)"><i data-ic="redo-2"></i></button><button id="bTh" title="Giao diện sáng/tối"><i data-ic="sun-moon"></i></button><button id="bPrev" class="secb" title="Mở thiết kế trong tab mới (Ctrl+P)"><i data-ic="eye"></i>Preview</button><button id="bZip" class="pri" title="Export .zip (Ctrl+E)"><i data-ic="download"></i>Export zip</button></div>
 </header>
 <aside id="left"><div class="lh"><span><i data-ic="braces"></i>CSS</span><span class="cnt" id="cssS">style.css</span></div><textarea id="cssT" spellcheck="false"></textarea></aside>
 <main id="mid">
@@ -877,6 +878,16 @@ async function buildZip(work){if(!window.JSZip){toast('Could not load JSZip');re
  ids.forEach(id=>{const a=kept[id];if(a)z.file('src/'+fn(a),a.data.split(',')[1],{base64:true})});
  if(work)z.file('comment.json',comJSON());return z.generateAsync({type:'blob',compression:'DEFLATE'})}
 $('#bZip').onclick=async()=>{const b=await buildZip(0);b&&dl(P.name+'.zip',b)};
+/* ---------- preview design in a new tab (Ctrl+P) ---------- */
+function standaloneHTML(){const c=code();const st='<style>\n'+inlineAssets(c.css)+'\n</style>';let h=c.html.replace(/<link[^>]*href=["']style\.css["'][^>]*>/i,()=>st);if(!/<style/i.test(h))h=h.replace(/<\/head>/i,()=>st+'</head>');return inlineAssets(h)}
+let prevURL=null;
+function openPreview(){let h;try{h=standaloneHTML()}catch(e){return toast('Không tạo được preview: '+(e&&e.message||e))}
+ const u=URL.createObjectURL(new Blob([h],{type:'text/html'}));
+ const w=window.open(u,'_blank');
+ if(!w){setTimeout(()=>URL.revokeObjectURL(u),2000);return toast('Popup bị chặn — hãy cho phép popup để mở preview')}
+ if(prevURL){const old=prevURL;setTimeout(()=>URL.revokeObjectURL(old),60000)}
+ prevURL=u;toast('Đã mở thiết kế trong tab mới')}
+$('#bPrev').onclick=openPreview;
 /* ---------- save .dbhtml once -> auto-save back to that file ---------- */
 let fileHandle=null,fileAuto=false,fileWriteQ=Promise.resolve(),fileTm=0,fileCanceled=false,lastAutoTm=0;
 const FDB='bs-file-handle',FST='h';
@@ -1060,6 +1071,7 @@ addEventListener('keydown',ev=>{const typing=/INPUT|TEXTAREA|SELECT/.test(ev.tar
  if(md&&!ev.altKey&&!ev.shiftKey){
   if(fk=='s'){ev.preventDefault();$('#bSave').click();return}
   if(fk=='e'){ev.preventDefault();$('#bZip').click();return}
+  if(fk=='p'){ev.preventDefault();$('#bPrev').click();return}
   if(fk=='o'){ev.preventDefault();$('#bOpen').click();return}
   if(fk=='n'){ev.preventDefault();$('#bBlank').click();return}
   if(fk=='t'){ev.preventDefault();$('#bTpl').click();return}
