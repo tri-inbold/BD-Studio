@@ -683,7 +683,9 @@ function toPrev(c){let h=c.html.replace(/<link[^>]*href=["']style\.css["'][^>]*>
 const hiddenCSS=()=>{const hid=P.els.filter(e=>e.hidden).map(e=>'.e_'+e.id).join(',');return hid?'<style id="bs-ui-hide">'+hid+'{display:none!important}</style>':''};
 let lastBody=null;
 function refresh(){clearTimeout(rtm);rtm=setTimeout(()=>{
- const c=code(),d=fr.contentDocument,sig=c.html.slice(c.html.indexOf('<body'));
+ const c=code(),d=fr.contentDocument,
+ rv=(c.css.match(/--(?:delay|dur|intro|outro|intro-duration|outro-duration)\s*:[^;]+;|\b(?:width|font-size|line-height|letter-spacing)\s*:[^;]+;/g)||[]).join(''),
+ sig=c.html.slice(c.html.indexOf('<body'))+'\n'+rv+'\n'+c.js;
  if(d&&d.getElementById('bs-css')&&lastBody===sig){
   d.getElementById('bs-css').textContent=inlineAssets(c.css);
   const old=d.getElementById('bs-ui-hide'),hc=hiddenCSS();
