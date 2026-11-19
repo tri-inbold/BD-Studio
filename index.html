@@ -432,18 +432,34 @@ function reveal(el) {
 const LOOP_N = __LOOPN__, LOOP_X = __LOOPX__, TOTAL = __TOTAL__;
 function startLoop() {
 	if (window.BS_EDIT) return;
-	let pass = 1;
+	const tl = document.timeline;
+	const T = TOTAL * 1000, X = LOOP_X * 1000;
+	const hasTail = LOOP_N > 0 && LOOP_X > 0 && LOOP_X < TOTAL;
+	const END = LOOP_N === 0 ? Infinity : LOOP_N * T + (hasTail ? X : 0);
 	const all = () => document.getAnimations();
-	const restart = () => all().forEach(a => { a.currentTime = 0; a.play(); });
-	const freezeAt = (sec) => all().forEach(a => { a.currentTime = sec * 1000; a.pause(); });
-	function run(len) {
-		setTimeout(() => {
-			if (LOOP_N === 0 || pass < LOOP_N) { pass++; restart(); run(TOTAL); }
-			else if (pass === LOOP_N && LOOP_X > 0 && LOOP_X < TOTAL) { pass++; restart(); setTimeout(() => freezeAt(LOOP_X), LOOP_X * 1000); }
-			else freezeAt(TOTAL);
-		}, len * 1000);
+	const base = tl.currentTime != null ? tl.currentTime : performance.now();
+	let lastPass = 0, done = false;
+
+	all().forEach(a => { a.startTime = base; });
+
+	function tick() {
+		if (done) return;
+		const el = tl.currentTime - base;
+		if (el >= END) {
+			done = true;
+			const at = hasTail ? X : T;
+			all().forEach(a => { a.pause(); a.currentTime = at; });
+			return;
+		}
+		const pass = Math.floor(el / T);
+		if (pass > lastPass) {
+			lastPass = pass;
+			const start = base + pass * T;
+			all().forEach(a => { a.startTime = start; });
+		}
+		requestAnimationFrame(tick);
 	}
-	run(TOTAL);
+	requestAnimationFrame(tick);
 }
 
 document.fonts.ready.then(() => {
