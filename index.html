@@ -232,6 +232,10 @@ button.mini:hover{background:var(--tris-surface-4)}
 #exp .row label{display:flex;align-items:center;gap:6px}
 #exp .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 #exp .msg{margin-top:12px;font-size:11px;color:var(--mu);min-height:16px}
+#props .f.c{gap:8px}#props .f.c input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;width:15px;height:15px;flex:none;margin:0;accent-color:var(--ac)}
+#props .fwarn{grid-column:1/-1;display:flex;align-items:flex-start;gap:7px;padding:7px 9px;border-radius:6px;font-size:11px;line-height:1.4;color:#a35200;background:rgba(255,179,0,.16);white-space:normal;overflow-wrap:break-word;min-width:0}#props .fwarn svg{flex:none;margin-top:1px}#props .fwarn span{white-space:normal;min-width:0}
+.pos-fields.pf2{grid-template-columns:1fr 1fr;gap:6px}.pos-fields.pf2 .f.w{grid-column:auto}.pos-fields.pf2 .f{padding:0 4px 0 6px;gap:3px}.pos-fields.pf2 .f span{font-size:10.5px;flex:none}.pos-fields.pf2 .f select.un{width:22px}
+.ob .ovs{position:absolute;right:0;bottom:0;width:15px;height:15px;display:grid;place-items:center;background:#fff;border:1.5px solid #e5242b;color:#e5242b;font:700 13px/1 var(--tris-font-sans);cursor:default;transform-origin:100% 100%;z-index:3}
 #exp .fmts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 #exp .fmts button{height:56px;flex-direction:column;gap:3px;font-size:10px;background:var(--fill);border:1px solid var(--ln)}
 #exp .fmts button b{font:600 13px var(--tris-font-sans)}
@@ -625,8 +629,8 @@ body{position:relative}
 .cta-text{display:inline-block;opacity:0;animation:ctaTextFade 1.4s var(--easing) forwards}
 @keyframes ctaExpand{from{opacity:0;transform:translate(0px,24px);width:0em}to{opacity:1;transform:translate(0px,0px);width:100%}}
 @keyframes ctaTextFade{from{transform:translate(0px,10px);opacity:0}to{transform:translate(0px,0px);opacity:1}}
-@keyframes DanskeBankIn{0%{opacity:0;transform:translate(var(--tx-from,0px),var(--ty-from,30px))}25%{opacity:1;transform:translate(0,0)}100%{opacity:1;transform:translate(0,0)}}
-@keyframes DanskeBankOut{0%{opacity:1;transform:translate(0,0)}75%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--tx-to,0px),var(--ty-to,-30px))}}
+@keyframes DanskeBankIn{0%{opacity:0;transform:translate(var(--tx-from,0px),var(--ty-from,30px))}100%{opacity:1;transform:translate(0,0)}}
+@keyframes DanskeBankOut{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--tx-to,0px),var(--ty-to,-30px))}}
 .progressBar{display:flex;justify-content:center;transform-style:preserve-3d;top:var(--y)}
 @keyframes probarFade{0%{opacity:1}60%{opacity:1}100%{opacity:0}}
 .rectangle{--cube-w:calc(var(--1c) * var(--bar-cols) * 0.7071);--cube-z:calc(var(--cube-w) / 2);--full-w:calc(var(--1c) * var(--bar-cols));--ratio-inv:0.235792;width:var(--cube-w);height:calc(var(--full-w) * var(--ratio-inv));position:relative;transform-style:preserve-3d;transform-origin:center}
@@ -638,6 +642,10 @@ body{position:relative}
 .face:nth-child(4){transform:rotateY(270deg) translateZ(var(--cube-z)) scale(1.01)}
 @keyframes probarAnimation{0%{transform:rotateY(-30deg) translate3d(-0.025em,0px,0px);animation-timing-function:cubic-bezier(0.5,0,1,0.8)}40%{transform:rotateY(10deg);animation-timing-function:linear}50%{transform:rotateY(60deg);animation-timing-function:linear}60%{transform:rotateY(95deg);animation-timing-function:step-start}61%{transform:rotateY(100deg);animation-timing-function:step-end}63%{transform:rotateY(105deg);animation-timing-function:linear}70%{transform:rotateY(120deg);animation-timing-function:cubic-bezier(0.33,1,0.68,1)}100%{transform:rotateY(150deg);animation-timing-function:linear}}
 @keyframes backFace{0%{backface-visibility:visible}50%{backface-visibility:visible}100%{backface-visibility:hidden}}
+@keyframes probarRunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes probarRunFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--1c) * -1.2))}}
+@keyframes probarRunWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+@keyframes probarRunSway{0%,100%{transform:translateX(0)}50%{transform:translateX(calc(var(--1c) * 1.2))}}
 @keyframes DBFadeIn{0%{opacity:0}100%{opacity:1}}
 @keyframes DBFadeOut{0%{opacity:1}100%{opacity:0}}
 @keyframes ctaFadeIn{from{opacity:0}to{opacity:1}}
@@ -676,7 +684,7 @@ Object.assign(IC,{'triangle-alert':'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 
 const ic=(n,z=16)=>'<svg class="ic" width="'+z+'" height="'+z+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'+IC[n]+'</svg>',ALI={left:'align-start-vertical',center:'align-center-vertical',right:'align-end-vertical',top:'align-start-horizontal',middle:'align-center-horizontal',bottom:'align-end-horizontal'};
 const DIRS=[['up','Up'],['down','Down'],['left','Left'],['right','Right']];
 const PRE=[[360,640],[320,480],[300,600],[300,250],[336,280],[728,90],[970,250],[1080,1920]];
-const AN={dir:'up',dirO:'up',delay:0,dur:3,intro:1,introD:1.8,outro:0,outroD:1.8};
+const AN={dir:'up',dirO:'up',delay:0,dur:3,intro:1,introD:0.4,outro:0,outroD:0.4};
 let P,sel=null,t=0,playing=false,zoom=1,pps=60,MODE='prev',upT=null,selKf=null,selKfs=[],selSet=new Set(),keyId=null,rtm,zoomV='fit',pass=0,done=false,mode='design';
 /* ---------- length units: values are stored in vw (type) / % (position), the displayed unit is per-field ---------- */
 let UN='vw';try{if(!/^(vw|vh|pt|px)$/.test(localStorage.getItem('bs-un')||''))localStorage.setItem('bs-un','vw');else UN=localStorage.getItem('bs-un')}catch(_){}
@@ -686,8 +694,9 @@ const PPN=[['%','%'],['px','px'],['vw','vw'],['vh','vh']];                // pos
 const pos2u=(v,u,ax)=>{const W=(P&&P.W)||360,H=(P&&P.H)||640;if(u=='px')return R(ax=='y'?v/100*H:v/100*W);if(u=='vw')return R(ax=='y'?v*H/W:v);if(u=='vh')return R(ax=='y'?v:v*W/H);return R(v)};
 const u2pos=(v,u,ax)=>{const W=(P&&P.W)||360,H=(P&&P.H)||640;if(u=='px')return ax=='y'?v/H*100:v/W*100;if(u=='vw')return ax=='y'?v*W/H:v;if(u=='vh')return ax=='y'?v:v*H/W;return v};
 /* inline icons for the CTA (add more here) */
-const ICONS={'chevron-right':{label:'Chevron right',vb:'0 0 32 32',d:'M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z'}};
-const ctaIconHTML=e=>{const i=ICONS[e.iconSet];return'<svg class="cta-icon" data-icon="'+e.iconSet+'" viewBox="'+i.vb+'" aria-hidden="true"><path d="'+i.d+'"/></svg>'};
+const ICONS={'chevron-right':{label:'Chevron right',vb:'0 0 32 32',inner:'<path d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"/>'}};
+const iconDef=k=>ICONS[k]||((P&&P.icons)||{})[k];
+const ctaIconHTML=e=>{const i=iconDef(e.iconSet);return'<svg class="cta-icon" data-icon="'+e.iconSet+'" viewBox="'+i.vb+'" aria-hidden="true">'+i.inner+'</svg>'};
 const posWrapE=(e,h)=>e.pos=='sub'?'<sub>'+h+'</sub>':e.pos=='super'?'<sup>'+h+'</sup>':h;
 const unwrapPos=h=>{const m=String(h).match(/^<(sub|sup)>([\s\S]*)<\/\1>$/);return m?{pos:m[1]=='sub'?'sub':'super',text:m[2]}:{pos:'normal',text:h}};                              // position + width/height/size
 const FUN=[['px','px']];                                        // fixed banner dimensions
@@ -704,15 +713,15 @@ const u2pad=(v,u)=>u=='vw'?v*vwPx():u=='vh'?v*vhPx():v;
 const CUN=[['col','col'],['px','px'],['%','%']];
 const colUnit=()=>{const e=cur();return(e&&e.cu)||'col'};
 const colPx=()=>((P&&P.W)||360)/64;
-const col2u=(v,u)=>u=='px'?R(v*colPx()):u=='%'?R(v/64*100):R(v);
-const u2col=(v,u)=>u=='px'?v/colPx():u=='%'?v/100*64:v;
+const col2u=(v,u,ax)=>u=='px'?R(v*colPx()):u=='%'?(ax=='y'?R(v*colPx()/((P&&P.H)||640)*100):R(v/64*100)):R(v);
+const u2col=(v,u,ax)=>u=='px'?v/colPx():u=='%'?(ax=='y'?v/100*((P&&P.H)||640)/colPx():v/100*64):v;
 const unSel=(k,o)=>{o=o||{};const list=o.u||UNS,now=o.unit||UN;return'<select class="un" data-un="'+(o.ku||k||'')+'" title="Unit">'+list.map(([v,l])=>'<option value="'+v+'"'+(v==now?' selected':'')+'>'+l+'</option>').join('')+'</select>'};
 function setFieldUnit(key,u){
  if(key=='fsu'){const e=cur();if(e&&e.type=='text')e.fsu=u}
  else if(key=='pu'){const e=cur();if(e)e.pu=u}
  else if(key.startsWith('pu:')){const e=cur();if(e){e.pus=e.pus||{};e.pus[key.slice(3)]=u}}
  else if(key=='ru'){const e=cur();if(e)e.ru=u}
- else if(key=='padu'){const e=cur();if(e){const f=(+e.fs||3)*vwPx(),was=e.padu||'px';if(was!=u){if(u=='em')e.pad=R(e.pad/f);else if(was=='em')e.pad=R(e.pad*f)}e.padu=u}}
+ else if(key=='padu'){const e=cur();if(e){const f=(+e.fs||3)*vwPx(),was=e.padu||'px';if(was!=u){['pad','pt','pr','pb','pl'].forEach(q=>{if(e[q]!=null){if(u=='em'&&was!='em')e[q]=R(e[q]/f);else if(was=='em'&&u!='em')e[q]=R(e[q]*f)}})}e.padu=u}}
  else if(key=='cu'){const e=cur();if(e)e.cu=u}
  else{UN=u;try{localStorage.setItem('bs-un',u)}catch(_){}}
  renderProps()}
@@ -741,8 +750,11 @@ function usedFontIds(p){const proj=p||P,s=new Set();
  const fontKeyOf=v=>{if(!v)return;return Object.keys(proj.assets).find(k=>proj.assets[k]&&(proj.assets[k].name==v||String(proj.assets[k].name).replace(/\.\w+$/,'')==v||fn(proj.assets[k])==v||fn(proj.assets[k]).replace(/\.\w+$/,'')==v))};
  const af=fontKeyOf(proj.font);if(af)s.add(af);
  {const used=new Set();proj.els.forEach(e=>{if((e.type=='text'||e.type=='cta')&&e.family)used.add(e.family)});(proj.fonts||[]).forEach(f=>{if(used.has(f.fam))usedFaces(f,proj).forEach(x=>{if(proj.assets[x.a])s.add(x.a)})})}
- proj.els.forEach(e=>{if(e.type=='text'){const k=fontKeyOf(e.family);if(k)s.add(k)}if(e.type=='text'||e.type=='cta'){s.add(style2asset(e.style||'Regular'))}});
- (proj.cb||'').replace(/@font-face\s*\{[^}]*?src:\s*url\((["']?)src\/([^"')]+)\1/g,(m,q,f)=>{const k=Object.keys(proj.assets).find(x=>proj.assets[x]&&fn(proj.assets[x])==f);if(k)s.add(k);return m});
+ const mainIds=new Set(),fontIdsLayer=new Set(),w2a=w=>+w==300?'f300':+w==500?'f500':+w==700?'f700':'font';
+ proj.els.forEach(e=>{if(e.type=='text'){const k=fontKeyOf(e.family);if(k){s.add(k);fontIdsLayer.add(k)}}
+  if((e.type=='text'||e.type=='cta')&&(!e.family||e.family==proj.font)){const a=style2asset(e.style||'Regular');s.add(a);mainIds.add(a);if(e.type=='text')String(e.text||'').replace(/font-weight:\s*(\d+)/g,(m,w)=>{s.add(w2a(w));mainIds.add(w2a(w))})}});
+ (proj.cb||'').replace(/@font-face\s*\{([^}]*)\}/g,(m,b)=>{const f=(b.match(/src:\s*url\(["']?src\/([^"')]+)/)||[])[1];if(!f)return m;const k=Object.keys(proj.assets).find(x=>proj.assets[x]&&fn(proj.assets[x])==f);if(!k)return m;
+  if(mainIds.has(k)||fontIdsLayer.has(k))s.add(k);return m});
  return s}
 function usedAssetIds(){const s=new Set();P.els.forEach(e=>{if(e.type=='image'&&e.src&&P.assets[e.src])s.add(e.src)});usedFontIds().forEach(k=>s.add(k));return s}
 function keepAssets(){const keep=usedAssetIds(),o={};Object.keys(P.assets).forEach(k=>{if(keep.has(k))o[k]=P.assets[k]});return o}
@@ -763,7 +775,8 @@ function placeNatural(e){const a=e&&P.assets[e.src];if(!a||!P)return;
   e.w=R(n.w/P.W*100);e.h=R(n.h/P.H*100);e.x=R(vx+(e.ox||0)*(e.w||0));e.y=R(vy+(e.oy||0)*(e.h||0));
   if(sel==e.id)renderProps();syncOV();refresh()})}
 const cfg=e=>'--delay:'+e.delay+'s;--dur:'+e.dur+'s;--intro:'+(e.intro?1:0)+';--outro:'+(e.outro?1:0)+';--intro-duration:'+e.introD+';--outro-duration:'+e.outroD+';';
-const anims=e=>{const T=P.total,l=[];KEYS.forEach(k=>{if(e.k&&e.k[k]&&e.k[k].length&&kSupp(e,k))l.push(KN[k]+'_'+e.id+' '+T+'s linear both')});if(e.type=='progress'&&e.outro)l.push('probarFade '+e.outroD+'s linear '+R(e.delay+e.dur-e.outroD)+'s forwards');l.push('vis_'+e.id+' '+T+'s step-end both');return'animation:'+l.join(',')+';'};
+const anims=e=>{const T=P.total,l=[];KEYS.forEach(k=>{if(e.k&&e.k[k]&&e.k[k].length&&kSupp(e,k))l.push(KN[k]+'_'+e.id+' '+T+'s linear both')});if(e.type=='progress'&&e.running){const st0=R(e.delay+((e.intro??1)?1.8:0)),en=R(e.delay+e.dur-(e.outro?e.outroD:0)),per=Math.max(.2,+e.runD||1.6),nIt=Math.max(1,Math.floor((en-st0)/per)),nm='probarRun'+({float:'Float',wobble:'Wobble',sway:'Sway'}[e.runT]||'Pulse');if(en>st0)l.push(nm+' '+per+'s ease-in-out '+st0+'s '+nIt+' both')}
+ if(e.type=='progress'&&e.outro)l.push('probarFade '+e.outroD+'s linear '+R(e.delay+e.dur-e.outroD)+'s forwards');l.push('vis_'+e.id+' '+T+'s step-end both');return'animation:'+l.join(',')+';'};
 function visCSS(e){const T=P.total,a=Math.min(100,R(e.delay/T*100)),b=Math.min(100,R((e.delay+e.dur)/T*100));
  const endHidden=a>=100||(b<100&&b>a);
  return'@keyframes vis_'+e.id+'{0%{visibility:'+(a<=0?'visible':'hidden')+'}'+(a>0&&a<100?a+'%{visibility:visible}':'')+(b<100&&b>a?b+'%{visibility:hidden}':'')+'100%{visibility:'+(endHidden?'hidden':'visible')+'}}'}
@@ -778,41 +791,79 @@ function elHTML(e){const c='e_'+e.id,I='  ';let h;
   const body=list?'<'+tag+' class="blist">'+e.text.split(/<br\s*\/?>/i).filter(l=>l.replace(/<[^>]*>/g,'').trim()).map(l=>'<li>'+posWrapE(e,l)+'</li>').join('')+'</'+tag+'>':posWrapE(e,e.text);
   h='<div class="el text '+c+'" data-reveal'+(list?'':' data-lines')+' data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'">'+body+'</div>'}
  else if(e.type=='image'){const v=isVidId(e.src);h='<div class="el img '+c+'">\n'+I+(v?'<video'+(e.intro?' class="rv" data-reveal data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'"':'')+' src="'+esc(au(e.src))+'" autoplay muted loop playsinline></video>':'<img'+(P.pub==='google'?' loading="lazy"':'')+(e.intro?' class="rv" data-reveal data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'"':'')+' src="'+esc(au(e.src))+'">')+'\n</div>';}
- else if(e.type=='cta')h='<div class="el ctaw '+c+'" data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'">\n'+I+'<div class="cta">\n'+I+I+'<span class="cta-text">'+esc(e.text)+'</span>'+(e.icon&&ICONS[e.iconSet]?ctaIconHTML(e):'')+'\n'+I+'</div>\n</div>';
+ else if(e.type=='cta')h='<div class="el ctaw '+c+'" data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'">\n'+I+'<div class="cta">\n'+I+I+(e.icon&&iconDef(e.iconSet)&&e.iconPos=='left'?ctaIconHTML(e):'')+'<span class="cta-text">'+esc(e.text)+'</span>'+(e.icon&&iconDef(e.iconSet)&&e.iconPos!='left'?ctaIconHTML(e):'')+'\n'+I+'</div>\n</div>';
  else if(e.type=='shape')h='<div class="el shape '+c+'">\n'+I+'<div class="sh'+(e.intro?' rv" data-reveal data-direction="'+e.dir+'" data-direction-out="'+e.dirO+'"':'"')+'></div>\n</div>';
  else h='<div class="el progressBar '+c+'"'+(e.alignTo?' data-align="'+esc(e.alignTo)+'"':'')+'>\n'+I+'<div class="rectangle">\n'+['a','b','a','b'].map(k=>I+I+'<div class="face '+k+'"></div>').join('\n')+'\n'+I+'</div>\n</div>';
  const s=maskShape(e.id);
  if(s)h='<div class="mk mk_'+e.id+'" data-mask="'+s.id+'">\n'+h.split('\n').map(l=>I+l).join('\n')+'\n</div>';
  return h}
+
+/* ---------- Box (background / padding / border / radius / vertical trim) ---------- */
+const padG=(e,k)=>e[k]!=null?+e[k]:(e.type=='cta'?(+e.pad||0):0);
+const stf=e=>(e.rot?'rotate:'+R(e.rot)+'deg;':'')+((e.scl&&e.scl!=100)?'scale:'+R(e.scl/100)+';':'');
+function boxCSS(e){let o='';const u=e.padu=='em'?'em':'px',t=padG(e,'pt'),r=padG(e,'pr'),b=padG(e,'pb'),l=padG(e,'pl'),li=+e.li||0;
+ if(e.bg&&e.bg!='transparent')o+='background-color:'+e.bg+';';
+ if(t)o+='padding-top:'+R(t)+u+';';if(r)o+='padding-right:'+R(r)+u+';';if(b)o+='padding-bottom:'+R(b)+u+';';
+ if(l&&li)o+='padding-left:calc('+R(l)+u+' + '+R(li)+'em);';else if(l)o+=u=='em'?'padding-left:calc('+R(l)+'em + 0em);':'padding-left:'+R(l)+'px;';else if(li)o+='padding-left:'+R(li)+'em;';
+ if(e.bw>0&&e.bst&&e.bst!='none')o+='border:'+R(e.bw)+'px '+e.bst+' '+(e.bc||'#000000')+';';
+ if(e.radius>0)o+='border-radius:'+R(e.radius)+((e.ru=='%')?'%':'px')+';';
+ if(t||r||b||l||(e.bw>0&&e.bst!='none'))o+='box-sizing:border-box;';
+ if(e.vt)o+='--vtrim:'+e.vt+';';
+ return o}
+const trimCache={};let trimCtx=null;
+function trimEm(e){if(!e.vt)return null;const wf=style2wf(e.style||'Regular'),fam=e.family?'"'+e.family+'"':'BSBanner',key=[fam,wf.w,wf.f,e.lh,e.vt].join('|');if(trimCache[key])return trimCache[key];
+ trimCtx=trimCtx||document.createElement('canvas').getContext('2d');trimCtx.font=(wf.f=='italic'?'italic ':'')+wf.w+' 100px '+fam+',Arial,sans-serif';
+ const m=trimCtx.measureText('Hxg'),mH=trimCtx.measureText('H'),mx=trimCtx.measureText('x');
+ const A=(m.fontBoundingBoxAscent||88)/100,D=(m.fontBoundingBoxDescent||22)/100,cap=(mH.actualBoundingBoxAscent||71)/100,xh=(mx.actualBoundingBoxAscent||52)/100,top=e.vt=='ex'?xh:cap,hl=((+e.lh||1.1)-(A+D))/2;
+ const r={t:+(hl+A-top).toFixed(4),b:+(hl+D).toFixed(4)};let ok=true;try{ok=document.fonts.check('100px '+fam)}catch(_){}if(ok)trimCache[key]=r;return r}
+function trimCSS(e,s){const r=e.vt&&trimEm(e);if(!r)return'';return'\n'+s+'::before{content:"";display:table;margin-bottom:-'+r.t+'em}\n'+s+'::after{content:"";display:table;margin-top:-'+r.b+'em}'}
+function ctaPad(e){const u=e.padu=='em'?'em':'px',a=['pt','pr','pb','pl'].map(k=>padG(e,k));if(!a.some(Boolean))return'';const t=a.map(v=>R(v)+u);return'padding:'+(t.every(x=>x==t[0])?t[0]:t.join(' '))+';'}
+const ctaBorder=e=>e.bw>0&&e.bst&&e.bst!='none'?'border:'+R(e.bw)+'px '+e.bst+' '+(e.bc||'#000000')+';box-sizing:border-box;':'';
+function parseTextBox(e,x,N){e.bg='';e.pt=e.pr=e.pb=e.pl=0;e.bw=0;e.radius=0;e.vt='';let li=0;
+ if(x['background-color']){e.bg=x['background-color'];delete x['background-color']}
+ const pu=v=>{const m=String(v).match(/^(-?[\d.]+)(px|em)$/);return m?{v:+m[1],u:m[2]}:null};
+ [['padding-top','pt'],['padding-right','pr'],['padding-bottom','pb']].forEach(([k,f])=>{if(x[k]!=null){const p=pu(x[k]);if(p){e[f]=p.v;e.padu=p.u;delete x[k]}}});
+ if(x['padding-left']!=null){const v=x['padding-left'],c=v.match(/^calc\(\s*(-?[\d.]+)(px|em)\s*\+\s*(-?[\d.]+)em\s*\)$/);if(c){e.pl=+c[1];e.padu=c[2];li=+c[3];delete x['padding-left']}else{const p=pu(v);if(p){if(p.u=='px'){e.pl=p.v;e.padu='px'}else li=p.v;delete x['padding-left']}}}
+ e.li=li;
+ if(x.border){const m=x.border.match(/^(-?[\d.]+)px\s+(\w+)\s+(.+)$/);if(m){e.bw=+m[1];e.bst=m[2];e.bc=m[3];delete x.border}}
+ let v=N('border-radius','px');if(v!=null){e.radius=v;e.ru='px'}else{v=N('border-radius','%');if(v!=null){e.radius=v;e.ru='%'}}
+ if(x['--vtrim']){e.vt=x['--vtrim'];delete x['--vtrim']}delete x['box-sizing']}
+const BSTY=[['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['double','Double'],['none','None']];
+function boxSec(e){const cta=e.type=='cta',pu=padUnit(),ps=pu=='em'?.05:1,pf=(k,l)=>fld(k,l,'pad',{v:padG(e,k),s:ps,unit:pu});
+ const bgf=cta?fld('bg','Background','color',{w:1}):'<div class="f w" style="gap:6px;padding-right:4px"><span>Background</span><button type="button" class="cfld" data-ck="bg" style="flex:1">'+sw(e.bg||'transparent')+'<span>'+(e.bg&&e.bg!='transparent'?colName(e.bg):'None')+'</span></button><button type="button" class="mini" data-act="bg-clear" title="No background">×</button></div>';
+ return G('Box',bgf,pf('pt','Top'),pf('pr','Right'),pf('pb','Bottom'),pf('pl','Left'),
+  fld('bw','Border width','num',{v:e.bw||0,s:1,suf:'px'}),fld('bst','Border style','sel',{o:BSTY,v:e.bst||'solid'}),fld('bc','Border color','color',{v:e.bc||'#000000',w:1}),
+  '<label class="f"><span>Radius</span><input data-k="radius" data-t="num" type="number" step="1" value="'+(e.radius||0)+'">'+unSel('radius',{u:PUN,unit:cta?radiusUnit():(e.ru||'px'),ku:'ru'})+'</label>',
+  cta?'':fld('vt','Vertical trim','sel',{o:[['','None'],['cap','Cap height ↔ baseline'],['ex','x-height ↔ baseline']],v:e.vt||'',w:1}))}
 function elCSS(e,i){const s='.e_'+e.id,z='z-index:'+(i+1)+';',xs=e.xs?e.xs.replace(/;?$/,';'):'',an=anims(e),og=org(e);
- if(e.type=='progress'){const ps=e.ps||'primary',st=ps=='positive'?'\n'+s+' .face.b{background-color:var(--cb);border:solid 1px var(--ca)}':ps=='negative'?'\n'+s+' .face.a{background-color:var(--ca);border:solid 1px var(--cb)}':'';
-  return s+'{'+z+'left:calc(var(--1c) * '+R(e.x)+');--y:calc(var(--1c) * '+R(e.y)+');--ca:'+e.colorA+';--cb:'+e.colorB+';--bar-cols:'+e.cols+';--delay:'+e.delay+'s;--dur:'+e.dur+'s;--intro:'+((e.intro??1)?1:0)+';--intro-duration:1.8;--outro:'+(e.outro?1:0)+';--outro-duration:'+e.outroD+'s;width:calc(var(--1c) * '+e.cols+');'+og+an+xs+'}'+st}
- const c=s+'{'+z+'left:'+R(e.x)+'%;top:'+R(e.y)+'%;width:'+(e.type=='cta'&&!e.w?'max-content':R(e.w)+'%')+';'+og+an;
+ if(e.type=='progress'){const ps=e.ps||'primary',st='\n'+s+' .face.a{border:solid var(--baw,0px) var(--cb)}\n'+s+' .face.b{border:solid var(--bbw,0px) var(--ca)}';
+  return s+'{'+z+'left:calc(var(--1c) * '+R(e.x)+');--y:calc(var(--1c) * '+R(e.y)+');--ca:'+e.colorA+';--cb:'+e.colorB+';'+psVars(e.ps||'primary')+';--bar-cols:'+e.cols+';--running:'+(e.running?1:0)+';--run-duration:'+(e.runD||1.6)+'s;--run-type:'+(e.runT||'pulse')+';--delay:'+e.delay+'s;--dur:'+e.dur+'s;--intro:'+((e.intro??1)?1:0)+';--intro-duration:1.8;--outro:'+(e.outro?1:0)+';--outro-duration:'+e.outroD+'s;width:calc(var(--1c) * '+e.cols+');'+og+stf(e)+an+xs+'}'+st}
+ const c=s+'{'+z+'left:'+R(e.x)+'%;top:'+R(e.y)+'%;width:'+(e.type=='cta'&&!e.w?'max-content':R(e.w)+'%')+';'+og+stf(e)+an;
  if(e.type=='text'){const wf=style2wf(e.style||'Regular'),ff=e.family?"font-family:'"+e.family+"',Arial,sans-serif;":'',fs='font-weight:'+wf.w+';'+(wf.f?'font-style:'+wf.f+';':''),tr=e.tr?'letter-spacing:'+R(e.tr)+'em;':'';
-  const pg=[e.li?'padding-left:'+R(e.li)+'em;':'',e.fli?'text-indent:'+R(e.fli)+'em;':'',e.sb?'margin-top:'+R(e.sb)+'em;':'',e.sa?'margin-bottom:'+R(e.sa)+'em;':''].join('');
-  return c+(e.h?('height:'+R(e.h)+'%;overflow:hidden;'):'')+'font-size:'+e.fs+'vw;'+ff+fs+'line-height:'+e.lh+';'+tr+pg+'color:'+e.color+';text-align:'+(e.ta||'center')+';align-content:'+(e.va=='bottom'?'end':e.va=='middle'?'center':'start')+';'+cfg(e)+xs+'}'}
+  const pg=['',e.fli?'text-indent:'+R(e.fli)+'em;':'',e.sb?'margin-top:'+R(e.sb)+'em;':'',e.sa?'margin-bottom:'+R(e.sa)+'em;':''].join('');
+  return c+(e.h?('height:'+R(e.h)+'%;overflow:hidden;'):'')+'font-size:'+e.fs+'vw;'+ff+fs+'line-height:'+e.lh+';'+tr+pg+'color:'+e.color+';'+boxCSS(e)+'text-align:'+(e.ta||'center')+';align-content:'+(e.va=='bottom'?'end':e.va=='middle'?'center':'start')+';'+cfg(e)+xs+'}'+trimCSS(e,s)}
  if(e.type=='cta'){const wf=style2wf(e.style||'Regular');return c+(e.h>0?'height:'+R(e.h)+'%;':'')+'font-size:'+e.fs+'vw;font-weight:'+wf.w+';'+(wf.f?'font-style:'+wf.f+';':'')+cfg(e)+xs+'}\n'+ctaRule(e)}
  if(e.type=='shape')return c+'height:'+R(e.h)+'%;color:'+e.c+';'+cfg(e)+xs+'}\n'+s+' .sh{width:100%;height:100%;background:'+(e.fill=='linear'&&e.g?gradVar(e):'currentColor')+';border-radius:'+R(e.radius)+'vw;box-sizing:border-box'+(e.sw>0?';border:'+R(e.sw)+'vw solid '+(e.sc||'#ffffff'):'')+(isMask(e)?';opacity:0':'')+'}';
  return c+'height:'+(e.h?R(e.h)+'%':'auto')+';'+cfg(e)+xs+'}\n'+s+' img,'+s+' video{object-fit:'+e.fit+';height:'+(e.h?'100%':'auto')+';width:100%}'}
 function maskInset(s,dx,dy,sc,fc){const cx=s.x-(s.ox||0)*s.w+s.w/2,cy=s.y-(s.oy||0)*s.h+s.h/2,w=s.w*sc,h=s.h*sc,L=cx-w/2,T=cy-h/2,f=(p,v)=>(fc||v)?'calc('+R(p)+'% + '+R(v)+'vw)':R(p)+'%';return'inset('+f(T,dy)+' '+f(100-L-w,-dx)+' '+f(100-T-h,-dy)+' '+f(L,dx)+' round '+R(s.radius*sc)+'vw)'}
 const dvec=(d,n)=>({up:[0,n],down:[0,-n],right:[-n,0],left:[n,0]}[d]||[0,n]);
 function mkCSS(e,i){const s=maskShape(e.id);if(!s)return'';const T=P.total,kp=(s.k&&s.k.p)||[],ks=(s.k&&s.k.s)||[],ko=(s.k&&s.k.o)||[],all=[...kp,...ks,...ko],vw=px=>px/P.W*100,os=s.delay+s.dur-s.outroD;
- const t0=all.map(z=>z.t);if(s.intro)t0.push(s.delay,s.delay+s.introD*.25);if(s.outro)t0.push(os+s.outroD*.75,s.delay+s.dur);
+ const t0=all.map(z=>z.t);if(s.intro)t0.push(s.delay,s.delay+s.introD);if(s.outro)t0.push(os,s.delay+s.dur);
  const ts=[...new Set(t0.map(R))].sort((a,b)=>a-b);
  const st=tm=>{const p=kv(s,'p',tm),sc=kv(s,'s',tm).v,D=P.dist;let op=kv(s,'o',tm).v,dx=p.x,dy=p.y;
-  if(s.intro){const f=Math.max(0,Math.min(1,(tm-s.delay)/(s.introD*.25))),[vx,vy]=dvec(s.dir,D);op*=f;dx+=vw(vx)*(1-f);dy+=vw(vy)*(1-f)}
-  if(s.outro){const f=Math.max(0,Math.min(1,(tm-os-s.outroD*.75)/(s.outroD*.25))),[vx,vy]=dvec(s.dir,-D);op*=1-f;dx+=vw(vx)*f;dy+=vw(vy)*f}
+  if(s.intro){const f=Math.max(0,Math.min(1,(tm-s.delay)/s.introD)),[vx,vy]=dvec(s.dir,D);op*=f;dx+=vw(vx)*(1-f);dy+=vw(vy)*(1-f)}
+  if(s.outro){const f=Math.max(0,Math.min(1,(tm-os)/s.outroD)),[vx,vy]=dvec(s.dir,-D);op*=1-f;dx+=vw(vx)*f;dy+=vw(vy)*f}
   return{dx,dy,sc,op}};
  let o='.mk_'+e.id+'{position:absolute;inset:0;z-index:'+(i+1)+';clip-path:'+maskInset(s,0,0,1)+';animation:'+(ts.length?'mkk_'+e.id+' '+T+'s linear both,':'')+'vis_'+s.id+' '+T+'s step-end both}';
  if(ts.length)o+='@keyframes mkk_'+e.id+'{'+ts.map(tm=>{const v=st(tm),z=all.find(q=>Math.abs(q.t-tm)<.03);return Math.min(100,R(tm/T*100))+'%{opacity:'+R(v.op)+';clip-path:'+maskInset(s,v.dx,v.dy,v.sc,true)+';animation-timing-function:'+(z?z.ease:'linear')+'}'}).join('')+'}';
  return o}
 const gradVar=e=>{if(!(e.k&&e.k.g&&e.k.g.length))return gradCSS(e);return'linear-gradient(var(--g_'+e.id+'_a, '+e.g.ang+'deg), '+e.g.stops.map((st,i)=>'var(--g_'+e.id+'_c'+i+', '+hex2(st.c,st.a)+') '+st.p+'%').join(', ')+')'};
-function kDecl(e,k,z){if(k=='o')return'opacity:'+R(z.v);if(k=='s')return'scale:'+R(z.v);if(k=='r')return'rotate:'+R(z.v)+'deg';
+function kDecl(e,k,z){if(k=='ps')return psVars(z.v);if(k=='o')return'opacity:'+R(z.v);if(k=='s')return'scale:'+R(z.v);if(k=='r')return'rotate:'+R(z.v)+'deg';
  if(k=='p')return'translate:calc('+R(-(e.ox||0)*100)+'% + '+R(z.x)+'vw) calc('+R(-(e.oy||0)*100)+'% + '+R(z.y)+'vw)';
  if(k=='c'||k=='b')return'color:'+z.v;
  return'--g_'+e.id+'_a:'+R(z.ang)+'deg;'+z.cols.map((c,i)=>'--g_'+e.id+'_c'+i+':'+hex2(c.c,c.a)).join(';')}
 function kfCSS(e){let o='';const T=P.total;KEYS.forEach(k=>{const a=(e.k&&e.k[k])||[];if(!a.length||!kSupp(e,k))return;
- o+='@keyframes '+KN[k]+'_'+e.id+'{'+a.slice().sort((x,y)=>x.t-y.t).map(z=>Math.min(100,R(z.t/T*100))+'%{'+kDecl(e,k,z)+';animation-timing-function:'+(z.ease||E0)+'}').join('')+'}';
+ o+='@keyframes '+KN[k]+'_'+e.id+'{'+a.slice().sort((x,y)=>x.t-y.t).map(z=>Math.min(100,R(z.t/T*100))+'%{'+kDecl(e,k,z)+';animation-timing-function:'+(k=='ps'?'step-end':(z.ease||E0))+'}').join('')+'}';
  if(k=='g'){o+='@property --g_'+e.id+'_a{syntax:"<angle>";inherits:true;initial-value:'+e.g.ang+'deg}';e.g.stops.forEach((st,i)=>{o+='@property --g_'+e.id+'_c'+i+'{syntax:"<color>";inherits:true;initial-value:'+hex2(st.c,st.a)+'}'})}});return o}
 function pkf(d){return[{t:d,x:0,y:R(30*((P&&P.H)||640)/((P&&P.W)||360)),ease:E0},{t:R(d+1.8),x:0,y:0,ease:E0}]}
 function sqh(){return R(30*((P&&P.W)||360)/((P&&P.H)||640))}
@@ -917,6 +968,7 @@ const obHTML=e=>supportsTransform(e)?'<div class="ob" data-id="'+e.id+'">'+THPOS
 function buildOV(){ov.innerHTML=P.els.filter(e=>!e.hidden&&!e.locked).map(obHTML).join('');syncOV()}
 function syncOV(){normSel();const d=fr.contentDocument;if(!d)return;ov.querySelectorAll('.ob').forEach(b=>{const n=d.querySelector('.e_'+b.dataset.id);if(!n)return;const me=byId(b.dataset.id);b.classList.toggle('mask',!!(me&&isMask(me)));const r=n.getBoundingClientRect();
  b.style.left=r.left+'px';b.style.top=r.top+'px';b.style.width=r.width+'px';b.style.height=r.height+'px';b.style.display=(getComputedStyle(n).visibility!=='hidden'||selSet.has(b.dataset.id))?'':'none';b.classList.toggle('on',selSet.has(b.dataset.id));b.classList.toggle('key',b.dataset.id==keyId);
+ {let ovs=b.querySelector('.ovs');const over=!!(me&&me.type=='text'&&me.h>0&&n.scrollHeight>n.clientHeight+1);if(over&&!ovs){ovs=document.createElement('i');ovs.className='ovs';ovs.textContent='+';ovs.title='Overset text: the text does not fit in this box';b.appendChild(ovs)}if(ovs){ovs.style.display=over?'':'none';ovs.style.transform='scale('+(1/zoom)+')'}}
  b.querySelectorAll('.th').forEach(h=>{if(h.dataset.pos=='center'&&me){h.style.left=R((me.ox||0)*100)+'%';h.style.top=R((me.oy||0)*100)+'%'}h.style.transform='translate(-50%,-50%) scale('+(1/zoom)+')'})});syncGL()}
 ov.addEventListener('mousedown',ev=>{if(tool=='comment'){ev.preventDefault();addC(ev);setTool('select');return}if(tool=='text'){ev.preventDefault();addTextDrag(ev);return}if(tool=='gradient'){ev.preventDefault();const g0=ev.target.closest('.ob'),ge=g0&&byId(g0.dataset.id);if(ge&&ge.type=='shape'&&sel!=ge.id)select(ge.id);return gradDrag(ev)}const b=ev.target.closest('.ob');if(!b){if(tool=='select')clearSel();return}ev.preventDefault();const e=byId(b.dataset.id),add=ev.shiftKey||ev.ctrlKey||ev.metaKey;
  if(add&&!(selSet.size==1&&selSet.has(e.id))&&!(ev.shiftKey&&!ev.ctrlKey&&!ev.metaKey&&selSet.size===0)){select(e.id,true);return}
@@ -966,8 +1018,8 @@ function resizeTransform(ev,e,pos,b){const x0=ev.clientX,y0=ev.clientY,pg=e.type
   if(sg.dy){if(hasB)h+=sg.dy; else if(hasT){t0+=sg.dy;h-=sg.dy} else {t0+=sg.dy}}
   if(w<8)w=8; if(h<8)h=8;
   const ox=e.ox||0,oy=e.oy||0;
-  e.w=R(w/P.W*100); e.h=R(h/P.H*100); e.x=R((l+ox*w)/P.W*100); e.y=R((t0+oy*h)/P.H*100);
-  if(n){n.style.width=e.w+'%';n.style.left=e.x+'%';n.style.top=e.y+'%';if(e.type=='image'||e.type=='shape')n.style.height=(e.h||0)+'%'}
+  const hz=hasL||hasR,vt=hasT||hasB;if(hz){e.w=R(w/P.W*100);e.x=R((l+ox*w)/P.W*100)}if(vt){e.h=R(h/P.H*100);e.y=R((t0+oy*h)/P.H*100)}
+  if(n){if(hz){n.style.width=e.w+'%';n.style.left=e.x+'%'}if(vt){n.style.top=e.y+'%';n.style.height=(e.h||0)+'%'}}
   if(e.type=='shape'&&isMask(e)){const wr=fr.contentDocument.querySelector('.mk_'+e.maskOf);if(wr)wr.style.clipPath=maskInset(e,0,0,1)}
   renderSmartGuides(sg.guides);syncOV()};
  const up=()=>{removeEventListener('mousemove',mv);removeEventListener('mouseup',up);clearSmartGuides();renderProps();refresh();renderCss()};
@@ -1008,7 +1060,7 @@ function fld(k,l,ty,o){o=o||{};const v=o.v!==undefined?o.v:cur()[k];let i;
  else if(ty=='color')i='<button type="button" class="cfld" data-ck="'+k+'">'+sw(v)+'<span>'+colName(v)+'</span></button>';
  else if(ty=='len'){const un=o.unit||UN,au=o.auto&&!(+v);i='<input data-k="'+k+'" data-t="len" data-ax="'+(o.ax||'x')+'" data-u="'+un+'"'+(o.pos?' data-pos="1"':'')+(o.auto?' data-auto="1" inputmode="decimal"':'')+' step="'+(o.s||.5)+'" type="'+(o.auto?'text':'number')+'" value="'+(au?'auto':esc(o.pos?pos2u(v,un,o.ax):vw2u(v,un,o.ax)))+'">'+unSel(k,{u:o.u||UNS,unit:un,ku:o.ku||''})}
  else if(ty=='pad')i='<input data-k="'+k+'" data-t="pad" data-u="'+(o.unit||'px')+'" step="'+(o.s||1)+'" type="number" value="'+esc(pad2u(v,o.unit||'px'))+'">'+unSel(k,{u:PADU,unit:o.unit||'px',ku:'padu'});
- else if(ty=='col')i='<input data-k="'+k+'" data-t="col" data-u="'+(o.unit||'col')+'" step="'+(o.s||.5)+'" type="number" value="'+esc(col2u(v,o.unit||'col'))+'">'+unSel(k,{u:CUN,unit:o.unit||'col',ku:'cu'});
+ else if(ty=='col')i='<input data-k="'+k+'" data-t="col" data-ax="'+(o.ax||'x')+'" data-u="'+(o.unit||'col')+'" step="'+(o.s||.5)+'" type="number" value="'+esc(col2u(v,o.unit||'col',o.ax))+'">'+unSel(k,{u:CUN,unit:o.unit||'col',ku:'cu'});
  else if(ty=='px')i='<input data-k="'+k+'" data-t="num" type="number" step="'+(o.s||1)+'" value="'+esc(v)+'"><b class="u">px</b>';
  else i='<input data-k="'+k+'" data-t="'+(ty=='num'?'num':'str')+'" type="'+(ty=='num'?'number':'text')+'"'+(ty=='num'?' step="'+(o.s||1)+'"':'')+' value="'+esc(v)+'">'+(ty=='num'&&o.suf?'<b class="u">'+o.suf+'</b>':'');
  return'<label class="f'+(ty=='area'||(ty=='len'&&!o.half)||o.w?' w':'')+(ty=='chk'?' c':'')+'"><span>'+l+'</span>'+i+'</label>'}
@@ -1017,12 +1069,13 @@ $('#props').addEventListener('input',ev=>{const el=ev.target,k=el.dataset.k;cons
 if(el.dataset.ez!=null&&el.dataset.ez!==''){const z=selKfObj();if(!z)return;const arr=[...document.querySelectorAll('[data-ez]')].map(i=>parseFloat(i.value));if(arr.some(isNaN))return;arr[0]=Math.max(0,Math.min(1,arr[0]));arr[2]=Math.max(0,Math.min(1,arr[2]));z.ease=bzS(arr);const pth=document.querySelector('.ecp');if(pth)pth.setAttribute('d',bzPath(z.ease));refresh();return}
 if(el.dataset.kfp){const e=cur(),p=el.dataset.kfp,v=parseFloat(el.value);if(isNaN(v))return;
  if(p=='o')setK(e,'o',t,{v:Math.max(0,Math.min(100,v))/100});else if(p=='s')setK(e,'s',t,{v:v/100});else if(p=='r')setK(e,'r',t,{v});else if(p=='px')setK(e,'p',t,{x:v});else if(p=='py')setK(e,'p',t,{y:v});else if(p=='ga')setK(e,'g',t,{ang:v});
- renderTL();refresh();return}if(el.id=='pn'){P.name=el.value.replace(/[^\w\-]/g,'_')||'banner';save();return}if(!k)return;if(k=='W'||k=='H')return;const o=cur(),ty=el.dataset.t;let v;
- if(ty=='len'){const cv=f=>D.pos!==undefined?u2pos(f,D.u||UN,D.ax):u2vw(f,D.u||UN,D.ax);if('auto' in D){const q=el.value.trim().toLowerCase();if(q===''||q==='0'||q==='auto')v=0;else if('auto'.startsWith(q))return;else{const f=parseFloat(q);if(isNaN(f))return;v=cv(f)}}else{v=cv(parseFloat(el.value));if(isNaN(v))return}}else if(ty=='pad'){v=R(u2pad(parseFloat(el.value),D.u||'px'));if(!isFinite(v))return}else if(ty=='col'){v=R(u2col(parseFloat(el.value),D.u||'col'));if(!isFinite(v))return}else if(ty=='num'){v=parseFloat(el.value);if(isNaN(v))return;if(k=='total'&&v<1)return}else if(ty=='chk')v=el.checked?1:0;else if(ty=='list'){v=el.value.split(',').map(parseFloat).filter(n=>!isNaN(n)&&n>=0);if(!v.length)v=[0]}else v=el.value;
+ renderTL();refresh();return}if(el.id=='pn'){P.name=el.value.replace(/[^\w\-]/g,'_')||'banner';save();return}if(el.dataset&&el.dataset.rs){const e=cur(),key=el.dataset.rs,v=parseFloat(el.value);if(e&&!isNaN(v)){const val=key=='s'?v/100:v;if(e.k&&e.k[key]&&e.k[key].length)setK(e,key,t,{v:val});else if(key=='r')e.rot=v;else e.scl=v;renderTL();refresh()}return}
+ if(!k)return;if(k=='W'||k=='H')return;const o=cur(),ty=el.dataset.t;let v;
+ if(ty=='len'){const cv=f=>D.pos!==undefined?u2pos(f,D.u||UN,D.ax):u2vw(f,D.u||UN,D.ax);if('auto' in D){const q=el.value.trim().toLowerCase();if(q===''||q==='0'||q==='auto')v=0;else if('auto'.startsWith(q))return;else{const f=parseFloat(q);if(isNaN(f))return;v=cv(f)}}else{v=cv(parseFloat(el.value));if(isNaN(v))return}}else if(ty=='pad'){v=R(u2pad(parseFloat(el.value),D.u||'px'));if(!isFinite(v))return}else if(ty=='col'){v=R(u2col(parseFloat(el.value),D.u||'col',D.ax));if(!isFinite(v))return}else if(ty=='num'){v=parseFloat(el.value);if(isNaN(v))return;if(k=='total'&&v<1)return}else if(ty=='chk')v=el.checked?1:0;else if(ty=='list'){v=el.value.split(',').map(parseFloat).filter(n=>!isNaN(n)&&n>=0);if(!v.length)v=[0]}else v=el.value;
   if(k=='loop'){const s=String(v).replace(/\s/g,'')||'0';if(!/^\d+(\+\d+(\.\d+)?)?$/.test(s)){el.value=P.loop;return toast('Format: n+x, e.g. 2+2 (0 = loop forever)')}v=s;const li=$('#lpi');if(li&&li!==document.activeElement)li.value=v;pass=0;done=false;updLoopTot()}
  if(ty=='len')v=R(v);
  if(k=='fs'&&o.type=='text'&&+o.fs>0&&v>0&&v!=o.fs)rescaleRich(v/+o.fs);if(k=='style'&&o.type=='text'){const ts=selSet.size>1?[...selSet].map(byId).filter(x=>x&&x.type=='text'):[o];ts.forEach(x=>{if(hasMixedStyle(x))resetRichStyle(x);x.style=v})}else if((k=='family'||k=='style'||k=='pos'||k=='lh'||k=='tr'||k=='fsrc')&&o.type=='text'&&selSet.size>1){[...selSet].filter(id=>byId(id).type=='text').forEach(id=>{byId(id)[k]=v})}else{o[k]=v}if(k=='iconSet'&&v)o.icon=1;if(k=='fsrc'){onFontSrc(o,v);return}if(k=='family')ensureDefaultFont(v);if((k=='bullet'||k=='num')&&v){o[k=='bullet'?'num':'bullet']=0;renderProps()}if(k=='src'&&o.type=='image')placeNatural(o);if(k=='fs'){const z=$('#rsz');if(z&&z!==document.activeElement){const sl=getSelection(),ed=$('#rte'),sv=sl.rangeCount&&ed&&ed.contains(sl.anchorNode)?spanSize(ed,sl.anchorNode,0):null;z.value=R(vw2u(sv!=null?sv:v,fsUnit()))}syncRtePreview()}if(k=='maskOf'&&v)P.els.forEach(x=>{if(x!==o&&x.type=='shape'&&x.maskOf==v)x.maskOf=''});if(k=='name')renderLayers();if(k=='total')t=Math.min(t,P.total);renderTL();refresh();if(k=='pub')renderProps();if(k=='W'||k=='H')sz();if(k=='family'){ensureFontFace(v);syncRtePreview();const ce=$('#cedit');if(ce)ce.style.fontFamily=rteFont(o)}if(k=='style'){ensureStyleFontFace(o);renderProps()}});
-$('#props').addEventListener('click',ev=>{const ck=ev.target.closest('[data-ck]');if(ck){const e=cur(),k=ck.dataset.ck;openCP(ck,e[k],h=>{const tk=e.type=='shape'?'b':'c';if((k=='color'||k=='c')&&autoKey(e,tk))setK(e,tk,t,{v:h});else e[k]=h;renderTL();renderProps();refresh()});return}
+$('#props').addEventListener('click',ev=>{const ck=ev.target.closest('[data-ck]');if(ck){const e=cur(),k=ck.dataset.ck;openCP(ck,e[k],h=>{const tk=e.type=='shape'?'b':'c';if((k=='color'||k=='c')&&autoKey(e,tk))setK(e,tk,t,{v:h});else e[k]=h;if(k=='color'&&e.type=='text')e.text=stripColor(e.text);renderTL();renderProps();refresh()});return}
 const gs=ev.target.closest('[data-gsc]');if(gs){const e=cur(),i=+gs.dataset.gsc;openCP(gs,e.g.stops[i].c,h=>{if(autoKey(e,'g')){const v=kv(e,'g',t),cols=v.cols.map(c=>({...c}));cols[i].c=h;setK(e,'g',t,{cols})}else e.g.stops[i].c=h;renderTL();renderProps();refresh()});return}
 const fb=ev.target.closest('[data-fill]');if(fb){setFill(cur(),fb.dataset.fill);renderProps();refresh();return}
 const ogb=ev.target.closest('[data-og]');if(ogb){const e=cur(),[a,b]=ogb.dataset.og.split(',').map(Number);e.ox=a;e.oy=b;renderProps();refresh();return}
@@ -1031,6 +1084,8 @@ const gx=ev.target.closest('[data-gsx]');if(gx){const e=cur();if(e.g.stops.lengt
 if(ev.target.closest('[data-gadd]')){const e=cur(),st=e.g.stops;st.push({c:st[st.length-1].c,a:1,p:50});st.sort((a,b)=>a.p-b.p);renderProps();refresh();return}
 const act=ev.target.closest('[data-act]'),a=act&&act.dataset.act;
 if(a==='total'){const[n,x]=lp();toast('Tổng thời gian: '+(n==0?'lặp vĩnh viễn ('+P.total+'s/lần)':R(n*P.total+x)+'s')+' · '+P.total+'s × '+n+(x?' + '+x+'s':''));return}
+if(a==='bg-clear'){const e=cur();if(e){e.bg='';renderProps();refresh()}return}
+if(a==='icon-load'){pickIcon();return}
 if(a==='gf-add'){const nm=($('#gfName')||{}).value,ws=[...document.querySelectorAll('#props .gfw:checked')].map(x=>+x.value);addGoogleFont(nm,ws);return}
 if(a==='sizelist'){sizeOpen=!sizeOpen;updBannerSize(true);return}
 if(a==='size-dec'){bumpSize(-1);return}
@@ -1121,7 +1176,7 @@ function applyFixed(c){
  const on=P.responsive!==0;
  let html=c.html.replace(/<meta name="viewport"[^>]*>/i,()=>'<meta name="viewport" content="width=device-width, initial-scale=1">')
                  .replace(/<meta name="ad.size"[^>]*>/i,()=>'<meta name="ad.size" content="width='+((P&&P.W)||360)+',height='+((P&&P.H)||640)+'">');
- const css=on?c.css:fixedCSS(c.css)+'\n#banner{position:relative;width:'+((P&&P.W)||360)+'px;height:'+((P&&P.H)||640)+'px;overflow:hidden}';
+ const css=on?c.css:fixedCSS(c.css)+'\nhtml,body{width:'+((P&&P.W)||360)+'px;height:'+((P&&P.H)||640)+'px;margin:0;overflow:hidden}\n#banner{position:relative;width:'+((P&&P.W)||360)+'px;height:'+((P&&P.H)||640)+'px;overflow:hidden}';
  return{html,css}
 }
 function humanSize(n){return n>=1048576?(n/1048576).toFixed(1)+' MB':n>=1024?(n/1024).toFixed(1)+' KB':R(n)+' B'}
@@ -1136,8 +1191,9 @@ function updBannerSize(now){const el=$('#pSize');if(!el||!el.offsetParent)return
  szTm=setTimeout(async()=>{const my=++szSeq;try{const b=await buildZip(0);if(my!=szSeq||!b)return;const e2=$('#pSize');if(!e2)return;e2.textContent=humanSize(b.size);e2.title='Real .zip size';renderSizeList(files,sum,b.size)}catch(_){}},now?0:700)}
 async function buildZip(work,opt){opt=opt||{};if(!window.JSZip){toast('Could not load JSZip');return null}const z=new JSZip(),c=code(),f=applyFixed(c);let h=f.html,css=f.css;
  if(opt.border)css+='\n\n/* 1px inner border */\n#banner{position:relative}\n#banner::after{content:"";position:absolute;inset:0;border:1px solid '+(opt.borderColor||'#cccccc')+';box-sizing:border-box;pointer-events:none;z-index:2147483647}\n';
- if(work)h+='\n<!--bs-model\n'+modelStr()+'\n-->\n';z.file('index.html',h);z.file('style.css',css);
  const kept=opt.assets||(work?P.assets:keepAssets()),ids=Object.keys(kept);
+ if(!work){const names=new Set(ids.map(i=>fn(kept[i])));css=css.replace(/@font-face\s*\{[^}]*\}\s*/g,m=>{const f=(m.match(/url\(["']?src\/([^"')]+)/)||[])[1];return(!f||names.has(f))?m:''})}
+ if(work)h+='\n<!--bs-model\n'+modelStr()+'\n-->\n';z.file('index.html',h);z.file('style.css',css);
  ids.forEach(id=>{const a=kept[id];if(a&&a.data)z.file('src/'+fn(a),a.data.split(',')[1],{base64:true})});
  if(work)z.file('comment.json',comJSON());return z.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:9}})}
 $('#bZip').onclick=async()=>{const b=await buildZip(0);b&&dl(P.name+'.zip',b)};
@@ -1195,7 +1251,8 @@ function pause(){playing=false;$('#bPlay').innerHTML=ic('play')}
 $('#bPlay').onclick=()=>playing?pause():play();$('#bStart').onclick=()=>{pause();t=0;pass=0;done=false;seek()};
 
 /* ---------- align ---------- */
-$('#props').addEventListener('change',ev=>{const el=ev.target,id=el.id;
+$('#props').addEventListener('change',ev=>{const el=ev.target;if(el.dataset&&el.dataset.kfps!==undefined){const e=cur();if(e){setK(e,'ps',t,{v:el.value});renderTL();renderProps();refresh()}return}
+ const id=el.id;
  if(el.dataset&&el.dataset.auto!==undefined){const k=el.dataset.k,e=cur();if(e&&k)el.value=+e[k]?(el.dataset.pos!==undefined?pos2u(e[k],el.dataset.u,el.dataset.ax):vw2u(e[k],el.dataset.u,el.dataset.ax)):'auto'}
  if(el.dataset&&(el.dataset.k=='W'||el.dataset.k=='H')){const dk=el.dataset.k;P[dk]=Math.min(4000,Math.max(50,Math.round(+el.value)||(dk=='W'?360:640)));sz();return}
  if(id=='presp'){P.responsive=el.checked?1:0;save();toast(P.responsive?'Responsive: bật — kích thước co giãn theo khung':'Responsive: tắt — xuất kích thước cố định '+P.W+'×'+P.H);return}
@@ -1216,19 +1273,20 @@ function rules(t){t=t.replace(/\/\*[\s\S]*?\*\//g,'');const out=[];let i=0;while
 function parseEl(e,sub,d){const x={...d};
  const N=(k,u)=>{const v=x[k];if(v==null)return;const m=v.match(new RegExp('^(-?[\\d.]+)'+u+'$'));if(!m)return;delete x[k];return +m[1]};
  const U=(k,f)=>{const v=x[k];if(v==null||isNaN(v))return;e[f]=+v;delete x[k]};
- if(sub=='.cta-text'||sub=='.cta-icon')return;
- if(sub=='.face.a'||sub=='.face.b'){e.ps=/solid/.test(x.border||'')?(sub=='.face.a'?'negative':'positive'):'primary';return}
+ if(sub=='.cta-text')return;if(!sub){if(x.rotate!=null){e.rot=parseFloat(x.rotate)||0;delete x.rotate}else e.rot=0;if(x.scale!=null){e.scl=R(parseFloat(x.scale)*100)||100;delete x.scale}else e.scl=100}if(sub=='.cta-icon'){e.iconSnap=/absolute/.test(x.position||'')?1:0;return}if(sub=='::before'||sub=='::after')return;
+ if(sub=='.face.a'||sub=='.face.b')return;
  if(sub=='.sh'){const bg=x.background||x['background-color'];if(bg){const gr=/var\(--g_/.test(bg)&&e.g?{ang:e.g.ang,stops:e.g.stops}:parseGrad(bg);if(gr){e.fill='linear';e.g=gr}else if(/^currentcolor$/i.test(bg))e.fill='solid';else if(/^#[0-9a-f]{6}$/i.test(bg)){e.fill='solid';e.c=bg.toLowerCase()}}const rr=N('border-radius','vw');if(rr!=null)e.radius=rr;const bd=x.border;if(bd){const m=bd.match(/^(-?[\d.]+)vw\s+solid\s+(#[0-9a-fA-F]{6})$/);if(m){e.sw=+m[1];e.sc=m[2].toLowerCase()}}else e.sw=0;return}
  if(sub=='img'){if(x['object-fit'])e.fit=x['object-fit'];return}
- if(sub=='.cta'){if(x.color)e.color=x.color;if(x['background-color'])e.bg=x['background-color'];if(x['font-family']){e.family=x['font-family'].split(',')[0].replace(/^["']|["']$/g,'').trim();delete x['font-family']}if(x['font-weight']||x['font-style']){const fw=x['font-weight'],fs2=x['font-style'];const st=STYLES.find(t=>String(t[1])===(fw||'400')&&t[2]===(fs2||'normal'))||STYLES[0];e.style=st[0];delete x['font-weight'];delete x['font-style']}let v=N('border-radius','%');if(v!=null){e.radius=v;e.ru='%'}else{v=N('border-radius','px');if(v!=null){e.radius=v;e.ru='px'}}v=N('height','%');if(v!=null)e.h=v;const pd=x.padding&&x.padding.match(/^(-?[\d.]+)(px|vw|vh|em)$/);if(pd){e.pad=R(pd[2]=='px'||pd[2]=='em'?+pd[1]:pd[2]=='vw'?+pd[1]*vwPx():+pd[1]*vhPx());e.padu=pd[2]}v=N('animation-delay','s');if(v!=null)e.delay=v;v=N('animation-duration','s');if(v!=null)e.introD=v;return}
+ if(sub=='.cta'){if(x.color)e.color=x.color;if(x['background-color'])e.bg=x['background-color'];if(x['font-family']){e.family=x['font-family'].split(',')[0].replace(/^["']|["']$/g,'').trim();delete x['font-family']}if(x['font-weight']||x['font-style']){const fw=x['font-weight'],fs2=x['font-style'];const st=STYLES.find(t=>String(t[1])===(fw||'400')&&t[2]===(fs2||'normal'))||STYLES[0];e.style=st[0];delete x['font-weight'];delete x['font-style']}let v=N('border-radius','%');if(v!=null){e.radius=v;e.ru='%'}else{v=N('border-radius','px');if(v!=null){e.radius=v;e.ru='px'}}v=N('height','%');if(v!=null)e.h=v;e.pt=e.pr=e.pb=e.pl=0;e.pad=0;if(x.padding){const m=x.padding.trim().split(/\s+/).map(q=>q.match(/^(-?[\d.]+)(px|vw|vh|em)$/));if(m.length&&m.every(Boolean)){const u=m[0][2],a=m.map(q=>R(u=='px'||u=='em'?+q[1]:u=='vw'?+q[1]*vwPx():+q[1]*vhPx()));const q4=a.length==1?[a[0],a[0],a[0],a[0]]:a.length==2?[a[0],a[1],a[0],a[1]]:a.length==3?[a[0],a[1],a[2],a[1]]:a;e.pt=q4[0];e.pr=q4[1];e.pb=q4[2];e.pl=q4[3];e.pad=q4[0];e.padu=u}}e.bw=0;if(x.border){const bm=x.border.match(/^(-?[\d.]+)px\s+(\w+)\s+(.+)$/);if(bm){e.bw=+bm[1];e.bst=bm[2];e.bc=bm[3]}}v=N('animation-delay','s');if(v!=null)e.delay=v;v=N('animation-duration','s');if(v!=null)e.introD=v;return}
  delete x['z-index'];delete x.animation;
  if(x.translate){const m=x.translate.match(/^(-?[\d.]+)%(?:\s+(-?[\d.]+)%)?$/);if(m){e.ox=-(+m[1])/100||0;e.oy=-(+(m[2]||0))/100||0;delete x.translate}}else{e.ox=0;e.oy=0}
  if(e.type=='progress'){let m=x.left&&x.left.match(/\*\s*(-?[\d.]+)/);if(m){e.x=+m[1];delete x.left}m=x['--y']&&x['--y'].match(/\*\s*(-?[\d.]+)/);if(m){e.y=+m[1];delete x['--y']}
-  U('--bar-cols','cols');if(x['--ca']){e.colorA=x['--ca'];delete x['--ca']}if(x['--cb']){e.colorB=x['--cb'];delete x['--cb']}[['--delay','delay'],['--dur','dur'],['--outro-duration','outroD']].forEach(([k,f])=>{const v=N(k,'s');if(v!=null)e[f]=v});U('--outro','outro');delete x.width}
+  U('--bar-cols','cols');if(x['--ca']){e.colorA=x['--ca'];delete x['--ca']}if(x['--cb']){e.colorB=x['--cb'];delete x['--cb']}{const ba=x['--baw'],bb=x['--bbw'];if(ba!=null||bb!=null){e.ps=parseFloat(ba)>0?'negative':parseFloat(bb)>0?'positive':'primary';delete x['--baw'];delete x['--bbw']}}
+  [['--delay','delay'],['--dur','dur'],['--outro-duration','outroD'],['--run-duration','runD']].forEach(([k,f])=>{const v=N(k,'s');if(v!=null)e[f]=v});U('--outro','outro');U('--running','running');if(x['--run-type']){e.runT=String(x['--run-type']).trim();delete x['--run-type']}delete x.width}
  else{if(x.width=='max-content'){e.w=0;delete x.width};if(e.type=='cta'){const hv=N('height','%');e.h=hv!=null?hv:0};[['left','x','%'],['top','y','%'],['width','w','%'],['font-size','fs','vw'],['--delay','delay','s'],['--dur','dur','s'],['animation-delay','delay','s'],['animation-duration','dur','s']].forEach(([k,f,u])=>{const v=N(k,u);if(v!=null)e[f]=v});
   U('line-height','lh');U('--intro','intro');U('--outro','outro');U('--intro-duration','introD');U('--outro-duration','outroD');
   if(e.type=='text'){if(x['text-align']){e.ta=x['text-align'];delete x['text-align']}if(x['align-content']){const ac=x['align-content'];e.va=(ac=='end'||ac=='flex-end')?'bottom':ac=='center'?'middle':'top';delete x['align-content']}}
-  if(e.type=='text'){if(x['font-family']){const f=x['font-family'].split(',')[0].replace(/^["']|["']$/g,'').trim();if(f&&f!='inherit')e.family=f;delete x['font-family']}if(x['font-weight']||x['font-style']){const fw=x['font-weight'],fs2=x['font-style'];const st=STYLES.find(t=>String(t[1])===(fw||'400')&&t[2]===(fs2||'normal'))||STYLES[0];e.style=st[0];delete x['font-weight'];delete x['font-style']}const nl=(k,f)=>{const v=x[k];if(v!=null){const m=v.match(/^(-?[\d.]+)em$/);if(m){e[f]=+m[1];delete x[k]}}};nl('letter-spacing','tr');nl('text-indent','fli');nl('padding-left','li');nl('margin-top','sb');nl('margin-bottom','sa');if(x['list-style-type']){e.bullet=x['list-style-type']=='disc'?1:0;e.num=x['list-style-type']=='decimal'?1:0;delete x['list-style-type']}if(x.display=='list-item')delete x.display}
+  if(e.type=='text'){if(x['font-family']){const f=x['font-family'].split(',')[0].replace(/^["']|["']$/g,'').trim();if(f&&f!='inherit')e.family=f;delete x['font-family']}if(x['font-weight']||x['font-style']){const fw=x['font-weight'],fs2=x['font-style'];const st=STYLES.find(t=>String(t[1])===(fw||'400')&&t[2]===(fs2||'normal'))||STYLES[0];e.style=st[0];delete x['font-weight'];delete x['font-style']}const nl=(k,f)=>{const v=x[k];if(v!=null){const m=v.match(/^(-?[\d.]+)em$/);if(m){e[f]=+m[1];delete x[k]}}};nl('letter-spacing','tr');nl('text-indent','fli');parseTextBox(e,x,N);nl('margin-top','sb');nl('margin-bottom','sa');if(x['list-style-type']){e.bullet=x['list-style-type']=='disc'?1:0;e.num=x['list-style-type']=='decimal'?1:0;delete x['list-style-type']}if(x.display=='list-item')delete x.display}
   if(e.type=='text'&&x.color){e.color=x.color;delete x.color}if(e.type=='shape'&&x.color){e.c=x.color.toLowerCase();delete x.color}
   if(e.type=='text'||e.type=='image'||e.type=='shape'){if(x.height=='auto'){e.h=0;delete x.height}else{const v=N('height','%');if(v!=null)e.h=v}}}
  e.xs=Object.entries(x).map(([k,v])=>k+':'+v).join(';')}
@@ -1246,7 +1304,7 @@ function applyCode(h,c,frag){let rs=null,base=null;
    let e=byId(m[1])||P.gone[m[1]];if(e&&e.type!=type)e=null;if(!e)e=mk(type,{id:m[1],name:m[1]});if(next.includes(e))return;delete P.gone[m[1]];
    if(type=='text'){const bl=n.querySelector('.blist');if(bl){e.bullet=bl.tagName=='UL'?1:0;e.num=bl.tagName=='OL'?1:0;const uu=[...bl.children].map(li=>unwrapPos(li.innerHTML));e.pos=uu.length?uu[0].pos:'normal';e.text=uu.map(q=>q.text).join('<br>')}else{e.bullet=0;e.num=0;const uw=unwrapPos(n.innerHTML.trim());e.pos=uw.pos;e.text=uw.text}e.dir=n.dataset.direction||'up';e.dirO=n.dataset.directionOut||e.dir}
    else if(type=='image'){const im=n.querySelector('img,video');if(im){const s=im.getAttribute('src')||'',a=Object.entries(P.assets).find(([k,v])=>'src/'+fn(v)==s);e.src=a?a[0]:s;e.intro=im.hasAttribute('data-reveal')?1:0;e.dir=im.dataset.direction||'up';e.dirO=im.dataset.directionOut||e.dir}}
-   else if(type=='cta'){const s=n.querySelector('.cta-text');if(s)e.text=s.textContent;const ci=n.querySelector('.cta-icon');e.icon=ci?1:0;if(ci&&ci.dataset.icon)e.iconSet=ci.dataset.icon;e.dir=n.dataset.direction||'expand';e.dirO=n.dataset.directionOut||e.dir}
+   else if(type=='cta'){const s=n.querySelector('.cta-text');if(s)e.text=s.textContent;const ci=n.querySelector('.cta-icon');e.icon=ci?1:0;if(ci&&ci.dataset.icon){e.iconSet=ci.dataset.icon;if(!iconDef(e.iconSet)){P.icons=P.icons||{};P.icons[e.iconSet]={label:e.iconSet,vb:ci.getAttribute('viewBox')||'0 0 24 24',inner:ci.innerHTML}}const kids=[...(n.querySelector('.cta')||n).children];e.iconPos=kids.indexOf(ci)<kids.indexOf(s)?'left':'right'}e.dir=n.dataset.direction||'expand';e.dirO=n.dataset.directionOut||e.dir}
    else if(type=='progress')e.alignTo=n.dataset.align||''
    else if(type=='shape'){const sh=n.querySelector('.sh');e.intro=sh&&sh.hasAttribute('data-reveal')?1:0;e.dir=(sh&&sh.dataset.direction)||'up';e.dirO=(sh&&sh.dataset.directionOut)||e.dir}
    next.push(e)});
@@ -1256,14 +1314,16 @@ function applyCode(h,c,frag){let rs=null,base=null;
   rs.forEach(r=>{let m;const s=r.s;
    if(/^@keyframes\s+(vis_|mkk_|ctaIn_|ctaOut_|ctaTxtIn_|ctaTxtOut_)/.test(s)||/^\.mk_\w+$/.test(s)||/^@property\s/.test(s)||/^@keyframes\s+kf_/.test(s))return;
    if(frag&&(m=s.match(/^@keyframes\s+(\w+)$/))&&(KFREL[(byId(frag)||{}).type]||[]).includes(m[1])){setBaseKf(m[1],s+'{'+r.b+'}');return}
-   if(m=s.match(/^@keyframes\s+kf([osprcbg])_(\w+)$/)){parseKf(m[1],m[2],r,frag,seen);return}
-   if(m=s.match(/^\.e_(\w+)(?:\s+(img|\.cta|\.cta-text|\.cta-icon|\.sh|\.face\.[ab]))?$/)){const e=byId(m[1]);if(e&&(!frag||frag==e.id))parseEl(e,m[2]||'',dec(r.b));return}
+   if(m=s.match(/^@keyframes\s+kf(ps|[osprcbg])_(\w+)$/)){parseKf(m[1],m[2],r,frag,seen);return}
+   if(m=s.match(/^\.e_(\w+)(?:\s*(img|\.cta|\.cta-text|\.cta-icon|\.sh|\.face\.[ab]|::before|::after))?$/)){const e=byId(m[1]);if(e&&(!frag||frag==e.id))parseEl(e,m[2]||'',dec(r.b));return}
    if(!frag)xc.push(s+'{'+r.b+'}')});
   if(!frag&&base!=null){P.xc=xc.join('\n');P.els.forEach(e=>KEYS.forEach(k=>{if(e.k&&e.k[k]&&e.k[k].length&&!seen.has(e.id+k))e.k[k]=[]}))}}
  readConsts();return true}
 
 /* ---------- keyframes (After Effects style: one track per property) ---------- */
-const KEYS=['o','s','p','r','c','b','g'],KN={o:'kfo',s:'kfs',p:'kfp',r:'kfr',c:'kfc',b:'kfb',g:'kfg'},KL={o:'Opacity',s:'Scale',p:'Position',r:'Rotation',c:'Color',b:'Background',g:'Gradient'};
+const KEYS=['o','s','p','r','c','b','g','ps'],KN={o:'kfo',s:'kfs',p:'kfp',r:'kfr',c:'kfc',b:'kfb',g:'kfg',ps:'kfps'},KL={o:'Opacity',s:'Scale',p:'Position',r:'Rotation',c:'Color',b:'Background',g:'Gradient',ps:'Bar style'};
+const PSOPT=[['primary','Primary'],['positive','Positive'],['negative','Negative']];
+const psVars=v=>'--baw:'+(v=='negative'?'1px':'0px')+';--bbw:'+(v=='positive'?'1px':'0px');
 const E0='cubic-bezier(0.7,0,0.2,1)';
 const EZ={ease:'cubic-bezier(0.25,0.1,0.25,1)','ease-in':'cubic-bezier(0.42,0,1,1)','ease-out':'cubic-bezier(0,0,0.58,1)','ease-in-out':'cubic-bezier(0.42,0,0.58,1)',linear:'linear'};
 const EPRE=[['DB Standard','cubic-bezier(0.7,0,0.2,1)'],['DB Dynamic','cubic-bezier(0.5,0,0,1)'],['DB Fade','cubic-bezier(0,0,0,1)'],['Linear','linear'],['Hold','step-end']];
@@ -1271,16 +1331,17 @@ const EAE=[['Easy Ease','both','F9'],['Ease In','in','Shift+F9'],['Ease Out','ou
 let kfShow={},uAll=false,uSet=new Set(),uOff=new Set(),lastU=0,uFull=new Set(),uFullAll=false,uBefore='none';
 const uModeOf=id=>uFull.has(id)||(uFullAll&&!uOff.has(id))?'all':(uSet.has(id)||(uAll&&!uOff.has(id)))?'kf':'none';
 const snp=v=>R(Math.round(v/.1)*.1);
-const kSupp=(e,k)=>k=='c'?e.type=='text':k=='b'?(e.type=='shape'&&e.fill!='linear'):k=='g'?(e.type=='shape'&&e.fill=='linear'&&!!e.g):true;
+const kSupp=(e,k)=>k=='ps'?e.type=='progress':k=='c'?e.type=='text':k=='b'?(e.type=='shape'&&e.fill!='linear'):k=='g'?(e.type=='shape'&&e.fill=='linear'&&!!e.g):true;
 const hasK=e=>KEYS.some(k=>e.k&&e.k[k]&&e.k[k].length);
 const bz4=s=>{const m=String(s).match(/cubic-bezier\(([^)]+)\)/);if(m)return m[1].split(',').map(Number);return s=='linear'?[0,0,1,1]:null};
 const bzS=a=>'cubic-bezier('+a.map(R).join(',')+')';
 const bzPath=s=>{if(s=='step-end')return'M0,90 H90 V0';const b=bz4(s)||[0,0,1,1];return'M0,90 C'+R(b[0]*90)+' '+R(90-b[1]*90)+' '+R(b[2]*90)+' '+R(90-b[3]*90)+' 90,0'};
-function kdef(e,k){return k=='o'||k=='s'?{v:1}:k=='r'?{v:0}:k=='p'?{x:0,y:0}:(k=='c'||k=='b')?{v:e.type=='text'?e.color:e.c}:{ang:e.g.ang,cols:e.g.stops.map(s=>({c:s.c,a:s.a}))}}
+function kdef(e,k){return k=='ps'?{v:e.ps||'primary'}:k=='o'?{v:1}:k=='s'?{v:(e.scl||100)/100}:k=='r'?{v:e.rot||0}:k=='p'?{x:0,y:0}:(k=='c'||k=='b')?{v:e.type=='text'?e.color:e.c}:{ang:e.g.ang,cols:e.g.stops.map(s=>({c:s.c,a:s.a}))}}
 function lerpC(a,b,f){const p=c=>{const n=parseInt(c.c.slice(1),16);return[n>>16&255,n>>8&255,n&255,c.a==null?1:c.a]};const x=p(a),y=p(b),m=x.map((v,i)=>v+(y[i]-v)*f);return{c:'#'+m.slice(0,3).map(v=>Math.round(v).toString(16).padStart(2,'0')).join(''),a:R(m[3])}}
 function kv(e,k,tm){const a=((e.k&&e.k[k])||[]).slice().sort((x,y)=>x.t-y.t);if(!a.length)return kdef(e,k);const cl=z=>JSON.parse(JSON.stringify(z));
  if(tm<=a[0].t)return cl(a[0]);const l=a[a.length-1];if(tm>=l.t)return cl(l);
  for(let i=1;i<a.length;i++)if(tm<=a[i].t){const A=a[i-1],B=a[i],f=(tm-A.t)/((B.t-A.t)||1),m=(x,y)=>x+(y-x)*f;
+  if(k=='ps')return{v:A.v,ease:A.ease};
   if(k=='p')return{x:m(A.x,B.x),y:m(A.y,B.y),ease:A.ease};
   if(k=='c'||k=='b')return{v:lerpC({c:A.v,a:1},{c:B.v,a:1},f).c,ease:A.ease};
   if(k=='g')return{ang:m(A.ang,B.ang),cols:A.cols.map((c,j)=>lerpC(c,B.cols[j]||c,f)),ease:A.ease};
@@ -1301,9 +1362,10 @@ function easeEd(e){const z=selKf&&selKf.id==e.id?selKfObj():null;if(!z)return'';
 function kfSec(e){const ks=shownKeys(e),hasAt=k=>((e.k&&e.k[k])||[]).some(z=>Math.abs(z.t-t)<.03);
  const num=(p,l,v,s)=>'<label class="f"><span>'+l+'</span><input type="number" step="'+s+'" data-kfp="'+p+'" value="'+R(v)+'"></label>';
  let h='<section id="kfs"><h4>'+ic('diamond',12)+' Keyframes @ <span id="kft">'+t.toFixed(2)+'</span>s</h4>';
- if(!ks.length)h+='<p class="mu">Chọn layer rồi nhấn <kbd>T</kbd> opacity, <kbd>S</kbd> scale, <kbd>P</kbd> position, <kbd>R</kbd> rotation, <kbd>C</kbd> color, <kbd>G</kbd> gradient. Giữ Shift để thêm nhiều thuộc tính. <kbd>U</kbd> hiện thuộc tính đã có keyframe, <kbd>U U</kbd> hiện tất cả thuộc tính. <kbd>A</kbd> mở Origin.</p>';
+ if(!ks.length)h+='<p class="mu">Chọn layer rồi nhấn <kbd>T</kbd> opacity, <kbd>S</kbd> scale, <kbd>P</kbd> position, <kbd>R</kbd> rotation, <kbd>C</kbd> color, <kbd>G</kbd> gradient, <kbd>Y</kbd> progress-bar style. Giữ Shift để thêm nhiều thuộc tính. <kbd>U</kbd> hiện thuộc tính đã có keyframe, <kbd>U U</kbd> hiện tất cả thuộc tính. <kbd>A</kbd> mở Origin.</p>';
  ks.forEach(k=>{const v=kv(e,k,t);h+='<div class="kg" data-k="'+k+'"><div class="kgh"><b>'+KL[k]+'</b><button type="button" data-kfa="'+k+'" class="'+(hasAt(k)?'on':'')+'" title="Thêm / xoá keyframe tại playhead">'+ic('diamond',12)+'</button></div><div class="g">'+
   (k=='o'?num('o','%',v.v*100,1):k=='s'?num('s','%',v.v*100,1):k=='r'?num('r','deg',v.v,5):k=='p'?num('px','X',v.x,.5)+num('py','Y',v.y,.5)
+  :k=='ps'?'<label class="f w"><span>Style</span><select data-kfps>'+PSOPT.map(o=>'<option value="'+o[0]+'"'+(v.v==o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
   :(k=='c'||k=='b')?'<label class="f w"><span>Color</span><button type="button" class="cfld" data-kfc="'+k+'">'+sw(v.v)+'<span>'+colName(v.v)+'</span></button></label>'
   :num('ga','Angle',v.ang,5)+'<div class="f w" style="background:transparent;padding:0">'+v.cols.map((c,i)=>'<button type="button" class="cfld" data-kfg="'+i+'" style="flex:none">'+sw(c.c)+'</button>').join('')+'</div>')+'</div></div>'});
  return h+easeEd(e)+'</section>'}
@@ -1323,6 +1385,7 @@ function parseKf(key,id,r,frag,seen){const e=byId(id);if(!e||(frag&&frag!=id))re
   else if(key=='r')k={t:t0,v:d.rotate!=null?parseFloat(d.rotate):0};
   else if(key=='c'||key=='b')k={t:t0,v:(d.color||'').toLowerCase()};
   else if(key=='p'){const m=(d.translate||'').match(/^calc\(\s*(-?[\d.]+)%\s*\+\s*(-?[\d.]+)vw\)\s+calc\(\s*(-?[\d.]+)%\s*\+\s*(-?[\d.]+)vw\)$/);k={t:t0,x:m?+m[2]:0,y:m?+m[4]:0}}
+  else if(key=='ps')k={t:t0,v:parseFloat(d['--baw'])>0?'negative':parseFloat(d['--bbw'])>0?'positive':'primary'};
   else{const cols=[];for(let i=0;d['--g_'+id+'_c'+i]!=null;i++)cols.push(pcol(d['--g_'+id+'_c'+i]));k={t:t0,ang:parseFloat(d['--g_'+id+'_a'])||0,cols}}
   k.ease=ease;out.push(k)}));
  if(!e.k)e.k={};e.k[key]=out.sort((a,b)=>a.t-b.t)}
@@ -1357,7 +1420,7 @@ addEventListener('keydown',ev=>{const typing=/INPUT|TEXTAREA|SELECT/.test(ev.tar
  if(md&&!typing&&mode=='design'&&(k=='v'||k=='V')&&kfClip){ev.preventDefault();pasteKfs();return}
  if(k=='F9'&&selKf&&!typing){ev.preventDefault();applyEase(ev.ctrlKey||ev.metaKey?'out':ev.shiftKey?'in':'both');return}
  if(mode!='design'||typing||md)return;
- const kl=k.toLowerCase(),PKm={t:'o',s:'s',p:'p',r:'r',c:'c',b:'b',g:'g'};
+ const kl=k.toLowerCase(),PKm={t:'o',s:'s',p:'p',r:'r',c:'c',b:'b',g:'g',y:'ps'};
  if(kl=='u'&&!ev.shiftKey){ev.preventDefault();const now=Date.now(),dbl=now-lastU<450;lastU=dbl?0:now;
   const ids=[...selSet].filter(id=>byId(id)),glob=!ids.length;
   const cm=()=>{if(glob)return uFullAll?'all':uAll?'kf':'none';const ms=new Set(ids.map(uModeOf));return ms.size==1?[...ms][0]:'mixed'};
@@ -1392,7 +1455,7 @@ $('#tH').addEventListener('input',()=>codeIn('h'));$('#tC').addEventListener('in
 ['#cssT','#tH','#tC'].forEach(s=>$(s).addEventListener('keydown',tabKey));
 
 /* ---------- shared base keyframes (css panel) ---------- */
-const KFREL={text:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],image:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],shape:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],cta:['ctaExpand','ctaTextFade','ctaExpandOut','ctaTextFadeOut','ctaFadeIn','ctaFadeOut','ctaWipeIn','ctaWipeOut','DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],progress:['probarAnimation','backFace','probarFade']};
+const KFREL={text:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],image:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],shape:['DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],cta:['ctaExpand','ctaTextFade','ctaExpandOut','ctaTextFadeOut','ctaFadeIn','ctaFadeOut','ctaWipeIn','ctaWipeOut','DanskeBankIn','DanskeBankOut','DBFadeIn','DBFadeOut'],progress:['probarAnimation','backFace','probarFade','probarRunPulse','probarRunFloat','probarRunWobble','probarRunSway']};
 function kfSpan(n){const i=P.cb.indexOf('@keyframes '+n);if(i<0)return null;const a=P.cb.indexOf('{',i);let d=1,j=a+1;while(j<P.cb.length&&d){if(P.cb[j]=='{')d++;else if(P.cb[j]=='}')d--;j++}return[i,j]}
 const baseKf=n=>{const s=kfSpan(n);return s?P.cb.slice(s[0],s[1]):''};
 function setBaseKf(n,txt){const s=kfSpan(n);if(s)P.cb=P.cb.slice(0,s[0])+fmtCSS(txt).trim()+P.cb.slice(s[1])}
@@ -1421,13 +1484,20 @@ function fontFields(e,vfam){const src=fontSrcOf(e),srcs=[['default','Default'],[
  let list;if(src=='default')list=[['','Danske'],['Roboto','Roboto']];
  else if(src=='system')list=[['','—']].concat(sysFontList(vfam).map(f=>[f,f]));
  else list=[['','—']].concat(fontsBy(src).map(f=>[f.fam,f.fam]));
- const warn=src=='system'?'<div class="f w fwarn" style="height:auto;padding:6px 8px;color:#b25e00;background:rgba(255,179,0,.14);white-space:normal;line-height:1.35">'+ic('triangle-alert',13)+'<span style="white-space:normal">'+SYSWARN+'</span></div>':'';
+ const warn=src=='system'?'<div class="fwarn">'+ic('triangle-alert',13)+'<span>'+SYSWARN+'</span></div>':'';
  const gf=src=='google'?'<div class="f w"><span>Google</span><input id="gfName" list="gflist" placeholder="e.g. Poppins" autocomplete="off"><datalist id="gflist">'+GFONTS.map(f=>'<option value="'+f+'">').join('')+'</datalist></div><div class="f w" style="gap:10px"><span>Weights</span>'+[300,400,500,700].map(w=>'<label style="display:flex;gap:3px;align-items:center;color:var(--tx)"><input type="checkbox" class="gfw" value="'+w+'"'+(w==400||w==700?' checked':'')+'>'+w+'</label>').join('')+'</div><button type="button" class="secb" style="grid-column:1/-1" data-act="gf-add">Add Google font</button>':'';
  return fld('fsrc','Font source','sel',{o:srcs,w:1,v:src})+warn+gf+fld('family','Family','sel',{o:list,w:1,v:vfam})}
 function onFontSrc(o,v){const ts=selSet.size>1?[...selSet].map(byId).filter(x=>x&&x.type=='text'):[o];
  ts.forEach(x=>{x.fsrc=v;const c=x.family||'';if(v=='default'){if(c!==''&&c!=='Roboto')x.family=''}else if(v!='system'&&!fontsBy(v).some(f=>f.fam==c))x.family=''});
  if(v=='system'){loadSystemFonts();toast(SYSWARN)}
  renderProps();refresh();if(v=='custom')pickFontFiles()}
+function pickIcon(){const i=document.createElement('input');i.type='file';i.accept='.svg,image/svg+xml';i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const txt=await f.text(),doc=new DOMParser().parseFromString(txt,'image/svg+xml'),sv=doc.documentElement;
+ if(!sv||sv.nodeName.toLowerCase()!='svg'||doc.querySelector('parsererror'))return toast('This file is not a valid SVG');
+ sv.querySelectorAll('script,foreignObject').forEach(n=>n.remove());sv.querySelectorAll('*').forEach(n=>{[...n.attributes].forEach(a=>{if(/^on/i.test(a.name))n.removeAttribute(a.name)});const fl=n.getAttribute('fill');if(fl&&!/^(none|transparent|currentcolor)$/i.test(fl))n.setAttribute('fill','currentColor')});
+ let vb=sv.getAttribute('viewBox');if(!vb){const w=parseFloat(sv.getAttribute('width'))||24,h=parseFloat(sv.getAttribute('height'))||24;vb='0 0 '+w+' '+h}
+ const inner=new XMLSerializer().serializeToString(sv).replace(/^<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'').replace(/ xmlns(:\w+)?="[^"]*"/g,'');
+ P.icons=P.icons||{};let id=f.name.replace(/\.svg$/i,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'icon';const base=id;let n=1;while(iconDef(id)&&id!==base+'-'+(n-1))id=base+'-'+(n++);
+ P.icons[id]={label:f.name.replace(/\.svg$/i,''),vb,inner};const e=cur();if(e&&e.type=='cta'){e.icon=1;e.iconSet=id}renderProps();refresh();toast('Icon "'+P.icons[id].label+'" loaded')}catch(err){toast('Could not read the SVG')}};i.click()}
 function pickFontFiles(){const i=document.createElement('input');i.type='file';i.multiple=true;i.accept='.woff2,.woff,.ttf,.otf';i.onchange=()=>{if(i.files.length)loadCustomFonts([...i.files])};i.click()}
 function parseFontName(file){const b=file.replace(/\.[^.]+$/,''),low=b.toLowerCase();let w=400;const i=/italic|oblique/.test(low)?1:0;
  if(/variablefont/.test(low)){return{fam:b.split(/[-_ ]?VariableFont/i)[0].replace(/[-_]+/g,' ').trim()||b,w:'100 900',i}}
@@ -1459,6 +1529,17 @@ function usedFaces(f,proj){proj=proj||P;const need=new Set();proj.els.forEach(e=
  const out=new Set();need.forEach(k=>{const it=/i$/.test(k),w=parseInt(k);let best=null,bd=1e9;f.faces.forEach(x=>{const xw=String(x.w).includes(' ')?w:+x.w,d=Math.abs(xw-w)+(!!x.i!=it?500:0)+(xw<w?.1:0);if(d<bd){bd=d;best=x}});if(best)out.add(best)});return[...out]}
 function fontCSS(p){const proj=p||P,used=new Set();proj.els.forEach(e=>{if((e.type=='text'||e.type=='cta')&&e.family)used.add(e.family)});
  return(proj.fonts||[]).filter(f=>used.has(f.fam)).map(f=>usedFaces(f,proj).filter(x=>proj.assets[x.a]).map(x=>'@font-face{font-family:"'+f.fam+'";src:url("src/'+fn(proj.assets[x.a])+'") format("'+ffmt(proj.assets[x.a].name)+'");font-weight:'+x.w+';font-style:'+(x.i?'italic':'normal')+';font-display:swap}').join('\n')).filter(Boolean).join('\n')}
+
+/* ---------- fonts that live in the project's src/ folder ---------- */
+const missingAssets=()=>Object.keys(P.assets).filter(k=>P.assets[k]&&!P.assets[k].data&&P.assets[k].name);
+async function loadMissingAssets(){let n=0;for(const k of missingAssets()){const a=P.assets[k];try{const r=await fetch('src/'+fn(a));if(!r.ok)continue;const b=await r.blob(),d=await new Promise(res=>{const f=new FileReader();f.onload=()=>res(f.result);f.readAsDataURL(b)});
+  const ext=(fn(a).split('.').pop()||'').toLowerCase();a.data=d.replace(/^data:[^;,]*/,'data:'+(MIME[ext]||b.type||'application/octet-stream'));n++}catch(_){}}
+ if(n){ensureFont();refresh();renderProps&&renderProps()}return n}
+async function pickSrcFolder(){let files=[];
+ try{if(window.showDirectoryPicker){const dir=await showDirectoryPicker({id:'bdsrc'});const walk=async(h,pre)=>{for await(const [nm,en] of h.entries()){if(en.kind=='file')files.push(await en.getFile());else if(nm=='src'||pre==='')await walk(en,nm)}};await walk(dir,'')}
+ else files=await new Promise(res=>{const i=document.createElement('input');i.type='file';i.multiple=true;i.webkitdirectory=true;i.onchange=()=>res([...i.files]);i.oncancel=()=>res([]);i.click()})}catch(_){return 0}
+ let n=0;for(const k of missingAssets()){const a=P.assets[k],f=files.find(x=>x.name==fn(a));if(!f)continue;const d=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(f)});const ext=(f.name.split('.').pop()||'').toLowerCase();a.data=d.replace(/^data:[^;,]*/,'data:'+(MIME[ext]||'application/octet-stream'));n++}
+ if(n){ensureFont();refresh();renderProps&&renderProps();toast('Loaded '+n+' font file'+(n>1?'s':'')+' from your folder')}return n}
 /* ---------- rich text (partial size / weight) ---------- */
 const hx=c=>{const m=String(c).match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);return m?'#'+[m[1],m[2],m[3]].map(x=>(+x).toString(16).padStart(2,'0')).join(''):/^#[0-9a-f]{6}$/i.test(c)?c.toLowerCase():''};
 /* insert a real line break at the caret (execCommand('insertLineBreak') only produces a raw \n) */
@@ -1540,6 +1621,8 @@ function applyPos(ed,key,kind,commit){const rg=RS[key];if(!rg||rg.collapsed||!ed
  const fr=rg.extractContents();fr.querySelectorAll('sub,sup').forEach(n=>n.replaceWith(...n.childNodes));
  let node=null;if(kind=='sub'||kind=='super'){node=document.createElement(kind=='sub'?'sub':'sup');node.appendChild(fr);rg.insertNode(node)}else rg.insertNode(fr);
  commit();if(node){const sl=getSelection();sl.removeAllRanges();const nr=document.createRange();nr.selectNodeContents(node);sl.addRange(nr);RS[key]=nr.cloneRange()}}
+function stripColor(h){const d=document.createElement('div');d.innerHTML=h||'';d.querySelectorAll('[style],font').forEach(n=>{if(n.tagName=='FONT'){n.removeAttribute('color');}if(n.style){n.style.color='';if(!n.getAttribute('style'))n.removeAttribute('style')}});
+ d.querySelectorAll('span').forEach(sp=>{if(!sp.attributes.length)sp.replaceWith(...sp.childNodes)});return d.innerHTML}
 function cfmt(p){const ed=$('#cedit');if(!ed)return;applyFmt(ed,'c',p,()=>{})}
 function applyRsz(){const z=$('#rsz');if(!z)return;const v0=parseFloat(z.value);if(!(v0>0))return;const v=R(u2vw(v0,fsUnit()));if(!(v>0))return;const ed=$('#rte'),e=cur();if(!ed||!e||e.type!='text')return;
  if(RS.p&&!RS.p.collapsed&&ed.contains(RS.p.commonAncestorContainer)){fmt({fontSize:v+'vw'});return}
@@ -1844,15 +1927,16 @@ const talSec=e=>'<div class="align-inline">'
  +'<div class="al">'+['left','center','right'].map(k=>'<button type="button" data-tal="'+k+'" class="'+((e.ta||'center')==k?'on':'')+'" title="Text align: '+k+'">'+ic(TALI[k],14)+'</button>').join('')+'</div>'
  +'<div class="al v">'+['top','middle','bottom'].map(k=>'<button type="button" data-tal="'+k+'" class="'+((e.va||'top')==k?'on':'')+'" title="Box align: '+k+'">'+ic(ALI[k],14)+'</button>').join('')+'</div>'
  +'</div>';
-const orgGrid=e=>'<div class="pos-origin"><span class="mu">Origin</span><div class="og">'+[0,.5,1].map(oy=>[0,.5,1].map(ox=>'<button data-og="'+ox+','+oy+'" class="'+(((e.ox||0)==ox&&(e.oy||0)==oy)?'on':'')+'" title="Origin '+['left','center','right'][ox*2]+' / '+['top','middle','bottom'][oy*2]+'"></button>').join('')).join('')+'</div><small>translate theo<br>kích thước layer</small></div>';
+const orgGrid=e=>'<div class="pos-origin"><div class="og">'+[0,.5,1].map(oy=>[0,.5,1].map(ox=>'<button data-og="'+ox+','+oy+'" class="'+(((e.ox||0)==ox&&(e.oy||0)==oy)?'on':'')+'" title="Origin '+['left','center','right'][ox*2]+' / '+['top','middle','bottom'][oy*2]+'"></button>').join('')).join('')+'</div></div>';
 function posSec(e){
  const pf=(k,l,st,auto)=>fld(k,l,'len',{s:st||.5,u:PPN,unit:puUnit(k),ku:'pu:'+k,ax:(k=='y'||k=='h')?'y':'x',pos:1,auto:auto});
  let g;
- const cf=(k,l,st)=>fld(k,l,'col',{s:st||.5,unit:colUnit()});
+ const cf=(k,l,st)=>fld(k,l,'col',{s:st||.5,unit:colUnit(),ax:k=='y'?'y':'x'});
  if(e.type=='progress')g=cf('x','X')+cf('y','Y')+cf('cols','W',1);
  else if(e.type=='cta')g=pf('x','X')+pf('y','Y')+pf('w','W',.5,1)+pf('h','H',.5,1);
  else g=pf('x','X')+pf('y','Y')+pf('w','W')+((e.type=='text'||e.type=='image'||e.type=='shape')?pf('h','H',.5,e.type!='shape'):'');
- return'<section><h4>Position</h4><div class="pos-wrap">'+orgGrid(e)+'<div class="pos-fields">'+g+'</div></div></section>'}
+ const rsF=(key,l,v,u)=>'<label class="f"><span>'+l+'</span><input type="number" step="'+(key=='r'?1:5)+'" data-rs="'+key+'" value="'+R(v)+'"><b class="u">'+u+'</b></label>';
+ return'<section><h4>Position</h4><div class="pos-wrap">'+orgGrid(e)+'<div class="pos-fields pf2">'+g+rsF('r','Rotate',kv(e,'r',t).v,'°')+rsF('s','Scale',kv(e,'s',t).v*100,'%')+'</div></div></section>'}
 function animSec(e){const o=e.type=='cta'?CTAS:DBS,sl=k=>'<label class="f"><select data-k="'+k+'">'+o.map(x=>'<option value="'+x[0]+'"'+(x[0]==(e[k]||'up')?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></label>';
  const row=(c,lb,tk,sk)=>'<div class="arow"><input type="checkbox" data-k="'+c+'" data-t="chk"'+(e[c]?' checked':'')+'><label class="f"><span>'+lb+'</span><input type="number" step=".1" data-k="'+tk+'" data-t="num" value="'+e[tk]+'"><b class="u">s</b></label>'+sl(sk)+'</div>';
  return'<section><h4>Animation</h4><div class="g">'+fld('delay','Start (s)','num',{s:.05})+fld('dur','Duration (s)','num',{s:.1})+'</div>'+row('intro','Intro','introD','dir')+row('outro','Outro','outroD','dirO')+'</section>'}
@@ -1898,14 +1982,21 @@ const textSec=e=>'<section class="text-section">'
 +textTypeGrid(e)
 +talSec(e)
 +'</section>'
++boxSec(e)
 +paragraphSec(e);
 const srcBox=e=>{const ids=Object.keys(P.assets).filter(k=>k!='font'&&!/^f\d+$/.test(k));
  return'<div class="f w srcbox"><span>Source</span><div class="srclist">'+ids.map(k=>{const a=P.assets[k],v=isVidId(k)||isVidId(a.name);return'<button type="button" data-src="'+esc(k)+'" class="'+(k==e.src?'on':'')+'" title="'+esc(a.name)+'">'+(v?'<i>▶</i>':'<img src="'+esc(a.data)+'" alt="">')+'<em>'+esc(a.name)+'</em></button>'}).join('')+'</div></div>'};
-const imgSec=e=>G('Media',srcBox(e),fld('fit','Fit','sel',{o:[['cover','cover'],['contain','contain'],['fill','fill']]}),'<div class="f w" style="padding:0;background:transparent"><button data-up="img" style="width:100%">relink</button></div>');
-const ctaSec=e=>G('Button',fld('text','Label','str'),fld('fs','Size','len',{s:.1,u:UNS,unit:fsUnit(),ku:'fsu',half:1}),fontFields(e,e.family||''),fld('style','Style','sel',{o:STYLES.map(x=>[x[0],x[0]]),w:1}),fld('icon','Icon','chk'),fld('iconSet','Icon type','sel',{o:[['','—']].concat(Object.entries(ICONS).map(([k,v])=>[k,v.label])),w:1,v:e.iconSet||''}),fld('pad','Padding','pad',{s:e.padu=='em'?.05:1,unit:padUnit()}),'<label class="f"><span>Radius</span><input data-k="radius" data-t="num" type="number" step="1" value="'+e.radius+'">'+unSel('radius',{u:PUN,unit:radiusUnit(),ku:'ru'})+'</label>',fld('color','Text color','color'),fld('bg','Background','color'))+'<section style="padding-top:0"><p class="mu">Tip: set W and H to <b>auto</b> in Position and choose <b>em</b> as the padding unit. The button then grows from its text and padding, and padding scales with the button size.</p></section>';
-const progSec=e=>G('Progress bar',fld('ps','Style','sel',{o:[['primary','Primary'],['positive','Positive'],['negative','Negative']]}))
+const imgSec=e=>G('Media',fld('fit','Fit','sel',{o:[['cover','cover'],['contain','contain'],['fill','fill']]}),'<div class="f w" style="padding:0;background:transparent"><button data-up="img" style="width:100%">relink</button></div>');
+const ctaSec=e=>G('Button',fld('text','Label','str'),fld('fs','Size','len',{s:.1,u:UNS,unit:fsUnit(),ku:'fsu',half:1}),fontFields(e,e.family||''),fld('style','Style','sel',{o:STYLES.map(x=>[x[0],x[0]]),w:1}),fld('color','Text color','color',{w:1}))
++G('Icon',fld('icon','Icon','chk'),fld('iconSet','Icon type','sel',{o:[['','—']].concat(Object.entries(ICONS).concat(Object.entries(P.icons||{})).map(([k,v])=>[k,v.label])),w:1,v:e.iconSet||''}),
+ fld('iconPos','Position','sel',{o:[['left','Left of text'],['right','Right of text']],v:e.iconPos||'right',w:1}),fld('iconSnap','Snap to button edge','chk',{v:e.iconSnap||0}),
+ '<button type="button" class="secb" style="grid-column:1/-1" data-act="icon-load">Load custom icon (.svg)…</button>')
++boxSec(e)
++'<section style="padding-top:0"><p class="mu">Tip: set W and H to <b>auto</b> in Position and choose <b>em</b> as the padding unit. The button then grows from its text and padding, and padding scales with the button size.</p></section>';
+const progSec=e=>G('Progress bar',fld('ps','Style','sel',{o:PSOPT}))
  +'<section><h4>Animation</h4><div class="g">'+fld('delay','Start (s)','num',{s:.05})+fld('dur','Duration (s)','num',{s:.1})+'</div>'
  +'<div class="arow"><input type="checkbox" data-k="intro" data-t="chk"'+(e.intro?' checked':'')+'><label class="f"><span>Intro</span><b class="u">1.8s</b></label></div>'
+ +'<div class="arow"><input type="checkbox" data-k="running" data-t="chk"'+(e.running?' checked':'')+'><label class="f"><span>Running</span><input type="number" step=".1" min=".2" data-k="runD" data-t="num" value="'+(e.runD||1.6)+'"><b class="u">s</b></label><label class="f"><select data-k="runT">'+[['pulse','Pulse'],['float','Float'],['wobble','Wobble'],['sway','Sway']].map(o=>'<option value="'+o[0]+'"'+((e.runT||'pulse')==o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label></div>'
  +'<div class="arow"><input type="checkbox" data-k="outro" data-t="chk"'+(e.outro?' checked':'')+'><label class="f"><span>Outro</span><input type="number" step=".1" data-k="outroD" data-t="num" value="'+e.outroD+'"><b class="u">s</b></label></div>'
  +'</section>';
 function renderProps(){normSel();const e=cur(),p=$('#props');
@@ -1926,14 +2017,14 @@ function ctaRule(e){const s='.e_'+e.id,D=+P.dist||24,os=R(e.delay+e.dur-e.outroD
   else if(d=='wipe'){kf.push('@keyframes '+IN+'{0%{opacity:1;clip-path:inset(0 100% 0 0)}100%{opacity:1;clip-path:inset(0 0 0 0)}}');ca.push(IN+' '+iD+'s '+EZ+' '+dl+'s both')}
   else if(d=='expand'){const v=dvec(d,D);kf.push('@keyframes '+IN+'{0%{opacity:0;width:0;transform:translate('+px(v[0])+','+px(v[1])+')}60%{opacity:1}100%{opacity:1;width:100%;transform:translate(0,0)}}');ca.push(IN+' '+iD+'s '+EZ+' '+dl+'s both');
    kf.push('@keyframes '+TIN+'{0%{opacity:0;transform:translate(0,10px)}100%{opacity:1;transform:translate(0,0)}}');ta.push(TIN+' '+R(iD*.7)+'s '+EZ+' '+R(dl+iD*.3)+'s both')}
-  else{const v=dvec(d,D);kf.push('@keyframes '+IN+'{0%{opacity:0;transform:translate('+px(v[0])+','+px(v[1])+')}25%{opacity:1;transform:translate(0,0)}100%{opacity:1;transform:translate(0,0)}}');ca.push(IN+' '+iD+'s ease-in-out '+dl+'s both')}}
+  else{const v=dvec(d,D);kf.push('@keyframes '+IN+'{0%{opacity:0;transform:translate('+px(v[0])+','+px(v[1])+')}100%{opacity:1;transform:translate(0,0)}}');ca.push(IN+' '+iD+'s ease-in-out '+dl+'s both')}}
  if(e.outro){const d=e.dirO;
   if(fade(d)){kf.push('@keyframes '+OUT+'{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(0,0)}}');ca.push(OUT+' '+oD+'s ease-in-out '+os+'s forwards')}
   else if(d=='wipe'){kf.push('@keyframes '+OUT+'{0%{opacity:1;clip-path:inset(0 0 0 0)}100%{opacity:1;clip-path:inset(0 0 0 100%)}}');ca.push(OUT+' '+oD+'s '+EZ+' '+os+'s forwards')}
   else if(d=='expand'){const v=dvec(d,-D);kf.push('@keyframes '+OUT+'{0%{opacity:1;width:100%;transform:translate(0,0)}100%{opacity:0;width:0;transform:translate('+px(v[0])+','+px(v[1])+')}}');ca.push(OUT+' '+oD+'s '+EZ+' '+os+'s forwards');
    kf.push('@keyframes '+TOUT+'{0%{opacity:1}100%{opacity:0}}');ta.push(TOUT+' '+R(oD*.5)+'s ease '+os+'s forwards')}
-  else{const v=dvec(d,-D);kf.push('@keyframes '+OUT+'{0%{opacity:1;transform:translate(0,0)}75%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate('+px(v[0])+','+px(v[1])+')}}');ca.push(OUT+' '+oD+'s ease-in-out '+os+'s forwards')}}
- return kf.join('\n')+'\n'+s+' .cta{color:'+e.color+';background-color:'+e.bg+';'+(e.family?"font-family:'"+e.family+"',Arial,sans-serif;":'')+'font-weight:'+style2wf(e.style||'Regular').w+';'+(style2wf(e.style||'Regular').f?'font-style:'+style2wf(e.style||'Regular').f+';':'')+'border-radius:'+((e.ru||'px')=='%'?'9999px':R(e.radius)+'px')+';'+(e.pad?'padding:'+R(e.pad)+((e.padu||'px')=='em'?'em':'px')+';':'')+'opacity:'+(e.intro?0:1)+';animation:'+(ca.length?ca.join(','):'none')+'}\n'+s+' .cta-text{opacity:'+(e.intro&&e.dir=='expand'?0:1)+';animation:'+(ta.length?ta.join(','):'none')+'}'+(e.icon&&ICONS[e.iconSet]?'\n'+s+' .cta-icon{width:1.1em;height:1.1em;margin-left:.25em;flex:none;fill:currentColor;opacity:'+(e.intro&&e.dir=='expand'?0:1)+';animation:'+(ta.length?ta.join(','):'none')+'}':'')}
+  else{const v=dvec(d,-D);kf.push('@keyframes '+OUT+'{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate('+px(v[0])+','+px(v[1])+')}}');ca.push(OUT+' '+oD+'s ease-in-out '+os+'s forwards')}}
+ return kf.join('\n')+'\n'+s+' .cta{color:'+e.color+';background-color:'+e.bg+';'+(e.family?"font-family:'"+e.family+"',Arial,sans-serif;":'')+'font-weight:'+style2wf(e.style||'Regular').w+';'+(style2wf(e.style||'Regular').f?'font-style:'+style2wf(e.style||'Regular').f+';':'')+'border-radius:'+((e.ru||'px')=='%'?'9999px':R(e.radius)+'px')+';'+ctaPad(e)+ctaBorder(e)+'position:relative;'+'opacity:'+(e.intro?0:1)+';animation:'+(ca.length?ca.join(','):'none')+'}\n'+s+' .cta-text{opacity:'+(e.intro&&e.dir=='expand'?0:1)+';animation:'+(ta.length?ta.join(','):'none')+'}'+(e.icon&&iconDef(e.iconSet)?'\n'+s+' .cta-icon{width:1.1em;height:1.1em;'+(e.iconSnap?'position:absolute;top:50%;translate:0 -50%;'+(e.iconPos=='left'?'left:':'right:')+(e.iconPos=='left'?R(padG(e,'pl')):R(padG(e,'pr')))+(e.padu=='em'?'em':'px')+';':(e.iconPos=='left'?'margin-right:.25em;':'margin-left:.25em;'))+'flex:none;fill:currentColor;opacity:'+(e.intro&&e.dir=='expand'?0:1)+';animation:'+(ta.length?ta.join(','):'none')+'}':'')}
 /* ---------- colour popover with custom colours ---------- */
 let customCols=[];try{customCols=JSON.parse(localStorage.getItem('bs-cc')||'[]')}catch(_){}
 function openCP(anchor,val,cb){const p=$('#cp'),v=String(val).toLowerCase();cpCb=cb;
@@ -1975,7 +2066,7 @@ $('#tlb').addEventListener('contextmenu',ev=>{ev.preventDefault();hideCtx();cons
  if(kfClip)it.push({sep:1},{label:'Paste keyframes',kb:'Ctrl+V',fn:pasteKfs});showCtx(ev.clientX,ev.clientY,it)});
 
 /* ---------- boot ---------- */
-function migrate(p){p.fonts=p.fonts||[];p.comments=p.comments||[];p.loop=p.loop||'0';p.gone={};p.xc=p.xc||'';if(p.responsive==null)p.responsive=1;p.els.forEach(e=>{if(e.type=='text'){e.fsu=e.fsu||'vw';if(e.tr==null)e.tr=0;if(e.style==null)e.style=e.fstyle?(e.fstyle=='italic'?'Italic':'Regular'):'Regular';e.family=e.family||'';['bullet','num','li','fli','sb','sa'].forEach(k=>{if(e[k]==null)e[k]=0})}});
+function migrate(p){p.fonts=p.fonts||[];p.icons=p.icons||{};p.comments=p.comments||[];p.loop=p.loop||'0';p.gone={};p.xc=p.xc||'';if(p.responsive==null)p.responsive=1;p.els.forEach(e=>{if(e.type=='text'){e.fsu=e.fsu||'vw';if(e.tr==null)e.tr=0;if(e.style==null)e.style=e.fstyle?(e.fstyle=='italic'?'Italic':'Regular'):'Regular';e.family=e.family||'';['bullet','num','li','fli','sb','sa'].forEach(k=>{if(e[k]==null)e[k]=0})}});
  if((p.v||0)<3){const fa=p.assets.font;p.cb=fmtCSS(BC.replace(/__BG__/g,p.bg).replace(/__FONT__/g,p.font).replace('__FONTURL__','src/'+(fa?fn(fa):'font.woff2')).trim());p.js=initJS();
   p.els.forEach(e=>{e.kf=e.kf||[];if(e.type=='text')e.text=esc(e.text||'').replace(/\n/g,'<br>');
    if(e.type=='progress'){e.delay=(e.delays&&e.delays[0])||0;e.dur=p.total||6;e.outro=0;e.outroD=1.8;if(!e.kf.length)e.kf=[{t:e.delay,o:1,x:0,y:R((e.run||30)*p.H/p.W),s:1,r:0,ease:'cubic-bezier(0.7,0,0.2,1)'},{t:R(e.delay+1.8),o:1,x:0,y:0,s:1,r:0,ease:'ease'}];delete e.run;delete e.delays}
@@ -1994,6 +2085,15 @@ function migrate(p){p.fonts=p.fonts||[];p.comments=p.comments||[];p.loop=p.loop|
   else if(!e.ox&&!e.oy){e.x=R(e.x+0.5*(e.w||0));e.y=R(e.y+0.5*(e.h||0));e.ox=.5;e.oy=.5}
   if(e.type=='cta'){if(e.pad!=null&&e.padu==null){e.pad=R(e.pad*16);e.padu='px'}if(e.family==null)e.family='';if(e.style==null)e.style=e.fweight?(e.fweight=='Bold'?'Bold':'Regular'):'Regular';if(e.icon==null)e.icon=0;if(e.iconSet==null)e.iconSet=''}
  });p.v=12}
+ if((p.v||0)<13){p.icons=p.icons||{};
+  const oIn=/(@keyframes DanskeBankIn\s*\{\s*0%\s*\{[^}]*\}\s*)25%\s*\{[^}]*\}\s*(100%)/,oOut=/(@keyframes DanskeBankOut\s*\{\s*0%\s*\{[^}]*\}\s*)75%\s*\{[^}]*\}\s*(100%)/;
+  const old=p.cb&&(oIn.test(p.cb)||oOut.test(p.cb)),sc=v=>Math.abs(v-1.8)<.01?.4:Math.max(.1,R(v*.25));
+  if(old){p.cb=p.cb.replace(oIn,'$1$2').replace(oOut,'$1$2');
+   p.els.forEach(e=>{if(e.type=='cta'){if(e.introD!=null&&!['expand','wipe','dissolve','faded'].includes(e.dir))e.introD=sc(e.introD);if(e.outroD!=null&&!['expand','wipe','dissolve','faded'].includes(e.dirO))e.outroD=sc(e.outroD)}
+    else if(e.type!='progress'){if(e.introD!=null)e.introD=sc(e.introD);if(e.outroD!=null)e.outroD=sc(e.outroD)}})}
+  if(p.cb&&!/probarRunPulse/.test(p.cb))p.cb=p.cb.replace(/(@keyframes DBFadeIn\s*\{)/,m=>"@keyframes probarRunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}\n@keyframes probarRunFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--1c) * -1.2))}}\n@keyframes probarRunWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}\n@keyframes probarRunSway{0%,100%{transform:translateX(0)}50%{transform:translateX(calc(var(--1c) * 1.2))}}\n"+m);
+  p.els.forEach(e=>{if(e.type=='cta'){if(e.pt==null){const v=e.pad||0;e.pt=e.pr=e.pb=e.pl=v}e.bw=e.bw||0;e.bst=e.bst||'solid';e.bc=e.bc||'#000000';e.iconPos=e.iconPos||'right';e.iconSnap=e.iconSnap||0}});
+  p.v=13}
  pruneUnusedAssets(p);
  return p}
 /* keep the generated runtime in sync with newer transition options */
@@ -3977,8 +4077,28 @@ if (typeof module === "object" && typeof module.exports === "object") Object.ass
  async function shot(time,scale,transparent){const doc=fr.contentDocument;if(!doc)throw Error('Preview chưa sẵn sàng');
   try{doc.getAnimations().forEach(a=>{a.pause();a.currentTime=Math.max(0,time)*1000})}catch(_){}
   let st=null;if(transparent){st=doc.createElement('style');st.textContent='html,body,#banner{background:transparent!important}';doc.head.appendChild(st)}
-  try{return await html2canvas(doc.getElementById('banner')||doc.body,{backgroundColor:transparent?null:(P.bg||'#000'),width:P.W,height:P.H,scale:scale||1,useCORS:true,logging:false,imageTimeout:20000,windowWidth:P.W,windowHeight:P.H,foreignObjectRendering:false,removeContainer:true})}
-  finally{if(st)st.remove()}}
+  /* html2canvas re-creates the page in a clone where CSS animations restart at 0, so freeze the state at `time` into inline styles */
+  await capFonts(doc);
+  const win=doc.defaultView,snap=new Map(),tagged=[];
+  [...doc.querySelectorAll('*')].forEach((el,i)=>{let an;try{an=el.getAnimations()}catch(_){return}if(!an.length)return;const props=new Set();
+   an.forEach(a=>{try{a.effect.getKeyframes().forEach(kf=>Object.keys(kf).forEach(k=>{if(!['offset','easing','composite','computedOffset','cssFloat'].includes(k))props.add(k)}))}catch(_){}});
+   if(!props.size)return;const cs=win.getComputedStyle(el),o={};props.forEach(p=>{const kb=p.startsWith('--')?p:p.replace(/[A-Z]/g,m=>'-'+m.toLowerCase());o[kb]=cs.getPropertyValue(kb)});el.setAttribute('data-bsi',i);tagged.push(el);snap.set(String(i),o)});
+  try{return await html2canvas(doc.getElementById('banner')||doc.body,{backgroundColor:transparent?null:(P.bg||'#000'),width:P.W,height:P.H,scale:scale||1,useCORS:true,logging:false,imageTimeout:20000,windowWidth:P.W,windowHeight:P.H,foreignObjectRendering:false,removeContainer:true,
+    onclone:async cd=>{cd.querySelectorAll('[data-bsi]').forEach(el=>{const o=snap.get(el.getAttribute('data-bsi'));if(!o)return;el.style.setProperty('animation','none','important');for(const k in o)el.style.setProperty(k,o[k],'important')});
+     try{await Promise.all([...cd.fonts].map(f=>f.load().catch(()=>{})));await cd.fonts.ready}catch(_){}}})}
+  finally{if(st)st.remove();tagged.forEach(el=>el.removeAttribute('data-bsi'))}}
+ /* the canvas html2canvas draws on belongs to this page, so the banner's web fonts must be registered here too */
+ let capKey='';async function capFonts(doc){const css=((doc.getElementById('bs-css')||{}).textContent||'').match(/@font-face\s*\{[^}]*\}/g)||[],key=css.join('').length+':'+css.length;
+  if(key!==capKey){let st=document.getElementById('bscapfonts');if(!st){st=document.createElement('style');st.id='bscapfonts';document.head.appendChild(st)}st.textContent=css.join('\n');capKey=key}
+  try{await Promise.all([...document.fonts].filter(f=>f.status!='loaded').map(f=>f.load().catch(()=>{})));await document.fonts.ready}catch(_){}}
+ /* keep rendering when the tab is in the background: browsers throttle page timers, but not timers inside a worker */
+ function bgTimers(){let w;try{w=new Worker(URL.createObjectURL(new Blob(['const m=new Map();onmessage=e=>{const d=e.data;if(d.t=="s")m.set(d.id,setTimeout(()=>{m.delete(d.id);postMessage(d.id)},d.ms));else if(d.t=="i")m.set(d.id,setInterval(()=>postMessage(d.id),d.ms));else{clearTimeout(m.get(d.id));clearInterval(m.get(d.id));m.delete(d.id)}}'],{type:'text/javascript'})))}catch(_){return()=>{}}
+  const st=window.setTimeout,ct=window.clearTimeout,si=window.setInterval,ci=window.clearInterval,cbs=new Map();let n=1e7;
+  w.onmessage=e=>{const c=cbs.get(e.data);if(!c)return;if(!c.iv)cbs.delete(e.data);try{c.fn()}catch(err){console.error(err)}};
+  window.setTimeout=(fn,ms,...a)=>{if(typeof fn!='function')return st(fn,ms);const id=++n;cbs.set(id,{fn:()=>fn(...a)});w.postMessage({t:'s',id,ms:+ms||0});return id};
+  window.setInterval=(fn,ms,...a)=>{if(typeof fn!='function')return si(fn,ms);const id=++n;cbs.set(id,{fn:()=>fn(...a),iv:1});w.postMessage({t:'i',id,ms:+ms||0});return id};
+  window.clearTimeout=id=>{if(id>=1e7){cbs.delete(id);w.postMessage({t:'c',id})}else ct(id)};window.clearInterval=window.clearTimeout.bind(window);
+  return()=>{window.setTimeout=st;window.clearTimeout=ct;window.setInterval=si;window.clearInterval=ci;try{w.terminate()}catch(_){}}}
  const restore=()=>{try{seek(nowT())}catch(_){}};
  function quant(cv,L){L=Math.max(2,Math.min(256,L));if(L>=256)return;const x=cv.getContext('2d'),im=x.getImageData(0,0,cv.width,cv.height),d=im.data,k=255/(L-1);for(let i=0;i<d.length;i+=4){d[i]=Math.round(Math.round(d[i]/k)*k);d[i+1]=Math.round(Math.round(d[i+1]/k)*k);d[i+2]=Math.round(Math.round(d[i+2]/k)*k)}x.putImageData(im,0,0)}
 
@@ -4008,8 +4128,11 @@ if (typeof module === "object" && typeof module.exports === "object") Object.ass
    return{assets:bm,size:bs,note:'images at quality '+lo+(sc<1?', scale '+sc:'')}}
   return{assets:last.assets,size:last.size,note:'could not reach '+kb+' KB, smallest possible is '+humanSize(last.size)+' (fonts/code take the rest)',over:true}}
  async function exportZip(){const o={border:$('expZb').checked,borderColor:$('expZbc').value};let kept=null,note='';
+  msg('Looking for font files…');await loadMissingAssets();
+  {const need=new Set(Object.keys(keepAssets()).filter(k=>!P.assets[k].data));if(need.size){msg('Font file(s) not found next to this page. Select your project folder (the one that contains src/)…');await pickSrcFolder();await loadMissingAssets()}
+   const left=Object.keys(keepAssets()).filter(k=>!P.assets[k].data).map(k=>fn(P.assets[k]));if(left.length)note+=(note?' · ':'')+'MISSING FONT FILES: '+left.join(', ')}
   if($('expZc').checked){const kb=Math.max(10,+$('expZk').value||150);msg('Compressing images…');const r=await fitZip(kb,o);kept=r.assets;note=r.note}
-  const b=await buildZip(0,{...o,assets:kept});if(!b)return;saveBlob(b,P.name+'.zip');msg('Done · ZIP '+humanSize(b.size)+(note?' · '+note:''))}
+  const b=await buildZip(0,{...o,assets:kept});if(!b)return;saveBlob(b,P.name+'.zip');msg('Done · ZIP '+humanSize(b.size)+(note?' · '+note:''),/MISSING/.test(note))}
 
  /* ---------- GIF ---------- */
  const fpsOf=()=>Math.max(1,Math.min(60,+$('expFps').value||12));
@@ -4044,11 +4167,11 @@ if (typeof module === "object" && typeof module.exports === "object") Object.ass
   const t0=performance.now();for(let i=0;i<n;i++){const im=await shot(i/f,1,false);x.fillStyle=P.bg||'#000';x.fillRect(0,0,P.W,P.H);x.drawImage(im,0,0);track.requestFrame&&track.requestFrame();if(i%3===0)msg('Video · frame '+(i+1)+'/'+n);const due=t0+(i+1)*1000/f-performance.now();if(due>0)await wait(due)}
   restore();rec.stop();await done;const ext=/mp4/.test(mime)?'mp4':'webm';saveBlob(new Blob(parts,{type:mime||'video/webm'}),P.name+'.'+ext);msg('Done · '+ext.toUpperCase()+(ext=='webm'?' (this browser cannot write MP4)':''))}
 
- $('expGo').onclick=async()=>{if(busy)return;busy=true;$('expGo').disabled=true;$('expClose').disabled=true;
+ $('expGo').onclick=async()=>{if(busy)return;busy=true;$('expGo').disabled=true;$('expClose').disabled=true;const endBg=bgTimers();try{pause()}catch(_){}
   try{if(fmt=='zip')await exportZip();else if(fmt=='jpg'||fmt=='png')await exportStill();else if(fmt=='gif')await exportGif();else if(fmt=='mp4')await exportMp4()}
   catch(e){msg('Error: '+(e&&e.message||e),true)}
-  busy=false;$('expGo').disabled=false;$('expClose').disabled=false};
- window.__exp={fitZip,shot,exportMp4,setFmt};
+  endBg();busy=false;$('expGo').disabled=false;$('expClose').disabled=false};
+ window.__exp={fitZip,shot,exportMp4,setFmt};setTimeout(()=>{try{loadMissingAssets()}catch(_){}},400);
 })();
 </script>
 </body>
