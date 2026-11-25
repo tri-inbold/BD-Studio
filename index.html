@@ -948,7 +948,7 @@ const hiddenCSS=()=>{const hid=P.els.filter(e=>e.hidden).map(e=>'.e_'+e.id).join
 let lastBody=null;
 function clearInline(d){try{d.querySelectorAll('.el,.mk').forEach(n=>{['left','top','width','height','translate','clip-path'].forEach(p=>n.style.removeProperty(p));if(!n.hasAttribute('data-align'))n.style.removeProperty('--y')})}catch(_){}}
 function refresh(){clearTimeout(rtm);rtm=setTimeout(()=>{
- const c=code(),d=fr.contentDocument,
+ fixDanskeNames();const c=code(),d=fr.contentDocument,
  rv=(c.css.match(/--(?:delay|dur|intro|outro|intro-duration|outro-duration)\s*:[^;]+;|\b(?:width|font-size|line-height|letter-spacing)\s*:[^;]+;/g)||[]).join(''),
  sig=c.html.slice(c.html.indexOf('<body'))+'\n'+rv+'\n'+c.js;
  if(d&&d.getElementById('bs-css')&&lastBody===sig){
@@ -1532,9 +1532,17 @@ function fontCSS(p){const proj=p||P,used=new Set();proj.els.forEach(e=>{if((e.ty
 
 /* ---------- fonts that live in the project's src/ folder ---------- */
 const missingAssets=()=>Object.keys(P.assets).filter(k=>P.assets[k]&&!P.assets[k].data&&P.assets[k].name);
+/* old projects name the Danske files Danske-Regular.woff2 / Danske-Bold.woff2; the repo's src/ folder uses dr / dl / dm / db */
+const DSHORT={regular:'dr',bold:'db',light:'dl',medium:'dm'};
+function fixDanskeNames(){if(typeof P==='undefined'||!P||!P.assets)return false;let ch=false;
+ const names=new Set(Object.values(P.assets).map(a=>a&&a.name));
+ Object.keys(P.assets).forEach(k=>{const a=P.assets[k];if(!a||!a.name)return;const m=a.name.match(/(?:^|\/)Danske[-_ ]?(Regular|Bold|Light|Medium)\.woff2$/i);if(!m)return;const nn=DSHORT[m[1].toLowerCase()]+'.woff2';if(!names.has(nn)){names.add(nn);a.name=nn;ch=true}});
+ const re=/url\((["']?)(?:\.\/)?(?:src\/)?Danske[-_ ]?(Regular|Bold|Light|Medium)\.woff2\1\)/gi;
+ if(P.cb){const nb=P.cb.replace(re,(m,q,w)=>'url('+q+'src/'+DSHORT[w.toLowerCase()]+'.woff2'+q+')');if(nb!==P.cb){P.cb=nb;ch=true}}
+ return ch}
 function loadFontBundle(){return new Promise(res=>{if(window.DANSKE_FONTS)return res(window.DANSKE_FONTS);const sc=document.createElement('script');sc.src='src/danske-fonts.js';sc.onload=()=>res(window.DANSKE_FONTS||null);sc.onerror=()=>res(null);document.head.appendChild(sc)})}
 let fontWarned=false;
-async function loadMissingAssets(){let n=0;
+async function loadMissingAssets(){let n=0;fixDanskeNames();
  /* 1) served over http(s), e.g. GitHub Pages: read src/<file> directly */
  if(location.protocol!=='file:')for(const k of missingAssets()){const a=P.assets[k];try{const r=await fetch('src/'+fn(a));if(!r.ok)continue;const b=await r.blob(),d=await new Promise(res=>{const f=new FileReader();f.onload=()=>res(f.result);f.readAsDataURL(b)});
   const ext=(fn(a).split('.').pop()||'').toLowerCase();a.data=d.replace(/^data:[^;,]*/,'data:'+(MIME[ext]||b.type||'application/octet-stream'));n++}catch(_){}}
