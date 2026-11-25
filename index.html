@@ -1532,9 +1532,17 @@ function fontCSS(p){const proj=p||P,used=new Set();proj.els.forEach(e=>{if((e.ty
 
 /* ---------- fonts that live in the project's src/ folder ---------- */
 const missingAssets=()=>Object.keys(P.assets).filter(k=>P.assets[k]&&!P.assets[k].data&&P.assets[k].name);
-async function loadMissingAssets(){let n=0;for(const k of missingAssets()){const a=P.assets[k];try{const r=await fetch('src/'+fn(a));if(!r.ok)continue;const b=await r.blob(),d=await new Promise(res=>{const f=new FileReader();f.onload=()=>res(f.result);f.readAsDataURL(b)});
+function loadFontBundle(){return new Promise(res=>{if(window.DANSKE_FONTS)return res(window.DANSKE_FONTS);const sc=document.createElement('script');sc.src='src/danske-fonts.js';sc.onload=()=>res(window.DANSKE_FONTS||null);sc.onerror=()=>res(null);document.head.appendChild(sc)})}
+let fontWarned=false;
+async function loadMissingAssets(){let n=0;
+ /* 1) served over http(s), e.g. GitHub Pages: read src/<file> directly */
+ if(location.protocol!=='file:')for(const k of missingAssets()){const a=P.assets[k];try{const r=await fetch('src/'+fn(a));if(!r.ok)continue;const b=await r.blob(),d=await new Promise(res=>{const f=new FileReader();f.onload=()=>res(f.result);f.readAsDataURL(b)});
   const ext=(fn(a).split('.').pop()||'').toLowerCase();a.data=d.replace(/^data:[^;,]*/,'data:'+(MIME[ext]||b.type||'application/octet-stream'));n++}catch(_){}}
- if(n){ensureFont();refresh();renderProps&&renderProps()}return n}
+ /* 2) opened from disk (file://): browsers block fetch() there, but a normal <script> is allowed, so read src/danske-fonts.js */
+ if(missingAssets().length){const B=await loadFontBundle();if(B)for(const k of missingAssets()){const a=P.assets[k],d=B[fn(a)];if(d){a.data=d;n++}}}
+ if(n){ensureFont();refresh();renderProps&&renderProps()}
+ else if(missingAssets().length&&!fontWarned){fontWarned=true;toast('Font files not found: add src/danske-fonts.js next to index.html, or use Export > select your project folder')}
+ return n}
 async function pickSrcFolder(){let files=[];
  try{if(window.showDirectoryPicker){const dir=await showDirectoryPicker({id:'bdsrc'});const walk=async(h,pre)=>{for await(const [nm,en] of h.entries()){if(en.kind=='file')files.push(await en.getFile());else if(nm=='src'||pre==='')await walk(en,nm)}};await walk(dir,'')}
  else files=await new Promise(res=>{const i=document.createElement('input');i.type='file';i.multiple=true;i.webkitdirectory=true;i.onchange=()=>res([...i.files]);i.oncancel=()=>res([]);i.click()})}catch(_){return 0}
@@ -4171,7 +4179,7 @@ if (typeof module === "object" && typeof module.exports === "object") Object.ass
   try{if(fmt=='zip')await exportZip();else if(fmt=='jpg'||fmt=='png')await exportStill();else if(fmt=='gif')await exportGif();else if(fmt=='mp4')await exportMp4()}
   catch(e){msg('Error: '+(e&&e.message||e),true)}
   endBg();busy=false;$('expGo').disabled=false;$('expClose').disabled=false};
- window.__exp={fitZip,shot,exportMp4,setFmt};setTimeout(()=>{try{loadMissingAssets()}catch(_){}},400);
+ window.__exp={fitZip,shot,exportMp4,setFmt};[400,1800].forEach(ms=>setTimeout(()=>{try{loadMissingAssets()}catch(_){}},ms));
 })();
 </script>
 </body>
