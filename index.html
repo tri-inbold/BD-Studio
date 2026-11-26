@@ -750,9 +750,10 @@ function usedFontIds(p){const proj=p||P,s=new Set();
  const fontKeyOf=v=>{if(!v)return;return Object.keys(proj.assets).find(k=>proj.assets[k]&&(proj.assets[k].name==v||String(proj.assets[k].name).replace(/\.\w+$/,'')==v||fn(proj.assets[k])==v||fn(proj.assets[k]).replace(/\.\w+$/,'')==v))};
  const af=fontKeyOf(proj.font);if(af)s.add(af);
  {const used=new Set();proj.els.forEach(e=>{if((e.type=='text'||e.type=='cta')&&e.family)used.add(e.family)});(proj.fonts||[]).forEach(f=>{if(used.has(f.fam))usedFaces(f,proj).forEach(x=>{if(proj.assets[x.a])s.add(x.a)})})}
+ const known=f=>(proj.fonts||[]).some(x=>x.fam==f),usesMain=e=>!e.family||e.family==proj.font||/^danske/i.test(e.family)||(!known(e.family)&&e.fsrc!=='system'&&!fontKeyOf(e.family));
  const mainIds=new Set(),fontIdsLayer=new Set(),w2a=w=>+w==300?'f300':+w==500?'f500':+w==700?'f700':'font';
  proj.els.forEach(e=>{if(e.type=='text'){const k=fontKeyOf(e.family);if(k){s.add(k);fontIdsLayer.add(k)}}
-  if((e.type=='text'||e.type=='cta')&&(!e.family||e.family==proj.font)){const a=style2asset(e.style||'Regular');s.add(a);mainIds.add(a);if(e.type=='text')String(e.text||'').replace(/font-weight:\s*(\d+)/g,(m,w)=>{s.add(w2a(w));mainIds.add(w2a(w))})}});
+  if((e.type=='text'||e.type=='cta')&&usesMain(e)){const a=style2asset(e.style||'Regular');s.add(a);mainIds.add(a);if(e.type=='text')String(e.text||'').replace(/font-weight:\s*(\d+)/g,(m,w)=>{s.add(w2a(w));mainIds.add(w2a(w))})}});
  (proj.cb||'').replace(/@font-face\s*\{([^}]*)\}/g,(m,b)=>{const f=(b.match(/src:\s*url\(["']?src\/([^"')]+)/)||[])[1];if(!f)return m;const k=Object.keys(proj.assets).find(x=>proj.assets[x]&&fn(proj.assets[x])==f);if(!k)return m;
   if(mainIds.has(k)||fontIdsLayer.has(k))s.add(k);return m});
  return s}
@@ -4148,7 +4149,9 @@ if (typeof module === "object" && typeof module.exports === "object") Object.ass
   {const need=new Set(Object.keys(keepAssets()).filter(k=>!P.assets[k].data));if(need.size){msg('Font file(s) not found next to this page. Select your project folder (the one that contains src/)…');await pickSrcFolder();await loadMissingAssets()}
    const left=Object.keys(keepAssets()).filter(k=>!P.assets[k].data).map(k=>fn(P.assets[k]));if(left.length)note+=(note?' · ':'')+'MISSING FONT FILES: '+left.join(', ')}
   if($('expZc').checked){const kb=Math.max(10,+$('expZk').value||150);msg('Compressing images…');const r=await fitZip(kb,o);kept=r.assets;note=r.note}
-  const b=await buildZip(0,{...o,assets:kept});if(!b)return;saveBlob(b,P.name+'.zip');msg('Done · ZIP '+humanSize(b.size)+(note?' · '+note:''),/MISSING/.test(note))}
+  const b=await buildZip(0,{...o,assets:kept});if(!b)return;{const src=kept||keepAssets(),fl=Object.keys(src).filter(k=>src[k]&&src[k].data&&/\.(woff2?|ttf|otf)$/i.test(fn(src[k]))).map(k=>fn(src[k])),declared=/@font-face/.test(applyFixed(code()).css);
+   if(!fl.length&&declared)note+=(note?' · ':'')+'MISSING FONT FILES: no font was copied into src/ (add src/danske-fonts.js, host the page, or select your project folder)';
+   saveBlob(b,P.name+'.zip');msg('Done · ZIP '+humanSize(b.size)+(fl.length?' · fonts: '+fl.join(', '):'')+(note?' · '+note:''),/MISSING/.test(note))}}
 
  /* ---------- GIF ---------- */
  const fpsOf=()=>Math.max(1,Math.min(60,+$('expFps').value||12));
